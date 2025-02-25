@@ -91,6 +91,8 @@ const TailwindUiTable = () => {
     const [editingSchool, setEditingSchool] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [isSpecificProject, setIsSpecificProject] = useState(false);
+    const [cardTitle, setCardTitle] = useState("List of Schools");
     
     // Fetch user role from localStorage
     useEffect(() => {
@@ -98,6 +100,15 @@ const TailwindUiTable = () => {
       if (userData) {
           const user = JSON.parse(userData);
           setUserRole(user.role);
+      }
+      const projectId = new URLSearchParams(window.location.search).get('projectId');
+      // setIsSpecificProject(!!projectId);
+      if (projectId) {
+        setIsSpecificProject(true);
+        setCardTitle("Assigned Schools to Project"); // Set a more specific title if a project ID is present
+      } else {
+        setIsSpecificProject(false);
+        setCardTitle("List of Schools"); // Default title when no project ID is present
       }
     }, []);
 
@@ -126,11 +137,12 @@ const TailwindUiTable = () => {
     };
 
     // Determine if the user is an admin or principal
-    const canManageSchools = userRole === 'superadmin';
+    const canManageSchools = userRole === 'superadmin'|| 'admin' && !isSpecificProject;
 
     return (
       <div className="space-y-6">
-        <Card title="List of Schools">
+        {/* <Card title="List of Schools"> */}
+        <Card title={cardTitle}>
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold"></h1>
             {showForm || showFileUploader ? (

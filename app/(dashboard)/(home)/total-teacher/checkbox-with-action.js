@@ -23,17 +23,44 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
     const [schoolId, setSchoolId] = useState('');
 
+    // useEffect(() => {
+    //   const userData = localStorage.getItem('user');
+    //   if (userData) {
+    //       const user = JSON.parse(userData);
+    //       setUserRole(user.role);
+    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
+    //   }
+    //   if (schoolId) {
+    //     fetchTeachers(schoolId);
+    //   }
+    // }, [schoolId]);
+
     useEffect(() => {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-          const user = JSON.parse(userData);
-          setUserRole(user.role);
-          setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
-      }
-      if (schoolId) {
-        fetchTeachers(schoolId);
-      }
-    }, [schoolId]);
+          // Only execute this code on the client-side
+          if (typeof window !== "undefined") {
+            const query = new URLSearchParams(window.location.search);
+            const urlSchoolId = query.get('schoolId');
+      
+            if (urlSchoolId) {
+              setSchoolId(urlSchoolId);
+            } else {
+              const userData = localStorage.getItem('user');
+              if (userData) {
+                const user = JSON.parse(userData);
+                setUserRole(user.role);
+                if (user.school && user.school._id) {
+                  setSchoolId(user.school._id);  // Assuming the school ID is stored in user data under 'school._id'
+                }
+              }
+            }
+          }
+        }, []);
+      
+        useEffect(() => {
+          if (schoolId) {
+            fetchTeachers(schoolId);
+          }
+        }, [schoolId]);
       
     const fetchTeachers = async (schoolId) => {
       try {
@@ -66,7 +93,7 @@ const CheckboxWithAction = ({ onEdit }) => {
             const data = await response.json();
             if (response.ok) {
               toast.success("Teacher deleted successfully");
-              fetchTeachers(); // Refresh the list after deletion
+              fetchTeachers(schoolId); // Refresh the list after deletion
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete Teacher");
@@ -84,7 +111,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       };
 
       // Check if the user is allowed to manage teachers
-    const canManageTeachers = userRole === 'admin' || userRole === 'principal';
+    const canManageTeachers = userRole === 'admin' || userRole === 'principal' || userRole === 'school';
 
   return (
     <>

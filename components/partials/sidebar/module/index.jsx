@@ -45,7 +45,7 @@ const ModuleSidebar = ({ trans }) => {
     if (userData) {
       const user = JSON.parse(userData);
       setUserRole(user.role);
-      redirectBasedOnRole(user.role); 
+      // redirectBasedOnRole(user.role); 
     }
     console.log("Fetched user role:", userRole); // Debugging the role fetched
   }, []);
@@ -68,27 +68,27 @@ const ModuleSidebar = ({ trans }) => {
     }
   }, [userRole]);
 
-  const redirectBasedOnRole = (role) => {
-    switch (role) {
-      case 'student':
-        router.push('/total-student');
-        break;
-      case 'teacher':
-        router.push('/total-teacher');
-        break;
-      case 'principal':
-        router.push('/total-principal');
-        break;
-      case 'admin':
-        router.push('/total-admin');
-        break;
-      case 'superadmin':
-        router.push('/dashboard');
-        break;
-      default:
-        break;
-    }
-  };
+  // const redirectBasedOnRole = (role) => {
+  //   switch (role) {
+  //     case 'student':
+  //       router.push('/total-student');
+  //       break;
+  //     case 'teacher':
+  //       router.push('/total-teacher');
+  //       break;
+  //     case 'principal':
+  //       router.push('/total-principal');
+  //       break;
+  //     case 'admin':
+  //       router.push('/total-admin');
+  //       break;
+  //     case 'superadmin':
+  //       router.push('/dashboard');
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
   
   const pathname = usePathname();
   const locationName = getDynamicPath(pathname);

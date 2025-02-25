@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // const schema = z.object({
 //   firstname: z
@@ -71,6 +71,14 @@ const MultipleTypes = ({ onAdded }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [schoolId, setSchoolId] = useState('');
+  
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user.school && user.school._id) {
+        setSchoolId(user.school._id);
+      }
+    }, []);
   
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -85,6 +93,9 @@ const MultipleTypes = ({ onAdded }) => {
 //     });
 //   }
 
+console.log("schoolId", schoolId);
+
+
 const onSubmit = async (data) => {
     console.log("data", data);
 
@@ -95,7 +106,8 @@ const onSubmit = async (data) => {
         email: data.email,
         password: data.password,
         gender: data.gender,
-        school: "67b30873134638074723bf66"  // Assuming a static value or you can add this as a form field
+        // school: schoolId  // Assuming a static value or you can add this as a form field
+        school: '67bb5e4e33fe1a10ab28bc8b'
     };
 
     console.log("Formatted data for API:", payload);

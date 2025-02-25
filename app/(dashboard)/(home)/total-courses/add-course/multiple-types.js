@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // const schema = z.object({
 //   firstname: z
@@ -41,12 +41,12 @@ import { useState, useEffect } from "react";
 // });
 
 const schema = z.object({
-    firstname: z.string().min(1, "Required").max(30),
-    lastname: z.string().min(1, "Required").max(30),
+    name: z.string().min(1, "Required").max(30),
+    department: z.string().min(1, "Required").max(30),
     phone: z.string().length(10, "Must be 10 digits"),
     email: z.string().email("Must be a valid email"),
     password: z.string().min(1, "Required"),
-    gender: z.enum(["male", "female", "others"], "Gender is required"),
+    description: z.string().min(1, "Required").max(30),
   });
 
 // const schema = z.object({
@@ -71,15 +71,7 @@ const MultipleTypes = ({ onAdded }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [schoolId, setSchoolId] = useState('');
-    
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.school && user.school._id) {
-      setSchoolId(user.school._id);
-    }
-  }, []);
-
+  
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
 //   function onSubmit(data) {
@@ -97,31 +89,29 @@ const onSubmit = async (data) => {
     console.log("data", data);
 
     const payload = {
-        firstName: data.firstname,
-        lastName: data.lastname,
+        name: data.name,
+        department: data.department,
         phoneNumber: data.phone,
         email: data.email,
         password: data.password,
-        gender: data.gender,
-        // school: "67bb5e4e33fe1a10ab28bc8b"  // Assuming a static value or you can add this as a form field
-        // school: schoolId  // Assuming a static value or you can add this as a form field
+        description: data.description
     };
 
     console.log("Formatted data for API:", payload);
     
     try {
-      const response = await fetch('https://xcxd.online:8080/api/v1/admin/addAdmin', {
+      const response = await fetch('https://xcxd.online:8080/api/v1/project/addProject', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const result = await response.json();
       if (response.ok) {
-        toast.success("New Admin Registered Successfully");
+        toast.success("New Project Registered Successfully");
         reset(); // Reset form fields
         onAdded(); // Call the callback to hide the form
       } else {
-        throw new Error(result.message || "Failed to add Admin");
+        throw new Error(result.message || "Failed to add Project");
       }
     } catch (error) {
       toast.error(error.message || "An error occurred during submission");
@@ -133,56 +123,56 @@ const onSubmit = async (data) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label
-            htmlFor="firstname"
+            htmlFor="name"
             className={cn("", {
-              "text-destructive": errors.firstname,
+              "text-destructive": errors.name,
             })}
           >
-            First Name
+            Project Name
           </Label>
           <Input
             type="text"
-            {...register("firstname")}
-            placeholder="Please enter first name"
+            {...register("name")}
+            placeholder="Please enter project name"
             className={cn("", {
-              "border-destructive focus:border-destructive": errors.firstname,
+              "border-destructive focus:border-destructive": errors.name,
             })}
           />
-          {errors.firstname && (
+          {errors.name && (
             <p
               className={cn("text-xs", {
-                "text-destructive": errors.firstname,
+                "text-destructive": errors.name,
               })}
             >
-              {errors.firstname.message}
+              {errors.name.message}
             </p>
           )}
         </div>
 
         <div className="flex flex-col gap-2">
           <Label
-            htmlFor="lastname"
+            htmlFor="department"
             className={cn("", {
-              "text-destructive": errors.lastname,
+              "text-destructive": errors.department,
             })}
           >
-            Last Name
+            Department
           </Label>
           <Input
             type="text"
-            {...register("lastname")}
-            placeholder="Please enter last name"
+            {...register("department")}
+            placeholder="Please enter department name"
             className={cn("", {
-              "border-destructive focus:border-destructive": errors.lastname,
+              "border-destructive focus:border-destructive": errors.department,
             })}
           />
-          {errors.lastname && (
+          {errors.department && (
             <p
               className={cn("text-xs", {
-                "text-destructive": errors.lastname,
+                "text-destructive": errors.department,
               })}
             >
-              {errors.lastname.message}
+              {errors.department.message}
             </p>
           )}
         </div>
@@ -233,18 +223,29 @@ const onSubmit = async (data) => {
 
         <div className="flex flex-col gap-2">
           <Label
-            htmlFor="gender"
+            htmlFor="description"
             className={cn("", {
-              "text-destructive": errors.gender,
+              "text-destructive": errors.description,
             })}
           >
-            Gender
+            Description
           </Label>
-          {/* <BasicSelect {...register("gender")} /> */}
-          <BasicSelect control={control} name="gender" />
-
-          {errors.gender && (
-            <p className="text-xs text-destructive">{errors.gender.message}</p>
+          <Input
+            type="text"
+            {...register("description")}
+            placeholder="Please enter project description"
+            className={cn("", {
+              "border-destructive focus:border-destructive": errors.description,
+            })}
+          />
+          {errors.description && (
+            <p
+              className={cn("text-xs", {
+                "text-destructive": errors.description,
+              })}
+            >
+              {errors.description.message}
+            </p>
           )}
         </div>
 

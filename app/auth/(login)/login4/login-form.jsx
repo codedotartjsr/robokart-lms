@@ -14,6 +14,7 @@ import { Icon } from "@iconify/react";
 import { SiteLogo } from "@/components/svg";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import config from "@/config/config";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
@@ -43,6 +44,7 @@ const LogInForm = () => {
   const [isVisible, setIsVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const router = useRouter();
 
   // const onSubmit = async (data) => {
   //   startTransition(async () => {
@@ -133,7 +135,16 @@ const LogInForm = () => {
           toast.success("Login Successful!");
   
           // Redirect manually to the correct dashboard page
-          window.location.href = "/dashboard";
+          // window.location.href = "/dashboard";
+          // Redirect based on role
+          const roleBasedRedirect = {
+            student: '/total-student',
+            teacher: '/total-teacher',
+            principal: '/total-principal',
+            admin: '/total-admin',
+            superadmin: '/dashboard',
+          };
+          router.push(roleBasedRedirect[result.data.role] || '/dashboard');
   
           reset(); // Reset form after login
         } else {

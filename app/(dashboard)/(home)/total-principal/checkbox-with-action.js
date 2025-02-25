@@ -21,19 +21,64 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPrincipal, setSelectedPrincipal] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [schoolId, setSchoolId] = useState('');
+
+    // useEffect(() => {
+    //   const userData = localStorage.getItem('user');
+    //   if (userData) {
+    //       const user = JSON.parse(userData);
+    //       setUserRole(user.role);
+    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
+    //   }
+    //   if (schoolId) {
+    //     fetchPrincipals(schoolId);
+    //   }
+    // }, [schoolId]);
 
     useEffect(() => {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-          const user = JSON.parse(userData);
-          setUserRole(user.role);
+      // Only execute this code on the client-side
+      if (typeof window !== "undefined") {
+        const query = new URLSearchParams(window.location.search);
+        const urlSchoolId = query.get('schoolId');
+  
+        if (urlSchoolId) {
+          setSchoolId(urlSchoolId);
+        } else {
+          const userData = localStorage.getItem('user');
+          if (userData) {
+            const user = JSON.parse(userData);
+            setUserRole(user.role);
+            if (user.school && user.school._id) {
+              setSchoolId(user.school._id);  // Assuming the school ID is stored in user data under 'school._id'
+            }
+          }
+        }
       }
-      fetchPrincipals();
     }, []);
+  
+    useEffect(() => {
+      if (schoolId) {
+        fetchPrincipals(schoolId);
+      }
+    }, [schoolId]);
+  
+    
+
+    // useEffect(() => {
+    //   const userData = localStorage.getItem('user');
+    //   if (userData) {
+    //       const user = JSON.parse(userData);
+    //       setUserRole(user.role);
+    //   }
+    //   fetchPrincipals();
+    // }, []);
+
+    console.log("schoolId", schoolId);  
       
-    const fetchPrincipals = async () => {
+    const fetchPrincipals = async (schoolId) => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/principal/getAllPricipal/679224529e970b6fc799a8a0", {
+        const response = await fetch(`https://xcxd.online:8080/api/v1/principal/getAllPricipal/${schoolId}`, {
+          // const response = await fetch('https://xcxd.online:8080/api/v1/principal/getAllPricipal/67bb5e4e33fe1a10ab28bc8b', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -60,7 +105,7 @@ const CheckboxWithAction = ({ onEdit }) => {
             const data = await response.json();
             if (response.ok) {
               toast.success("Principal deleted successfully");
-              fetchPrincipals(); // Refresh the list after deletion
+              fetchPrincipals(schoolId); // Refresh the list after deletion
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete principal");
@@ -78,7 +123,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       };
 
       // Check if the user is allowed to manage teachers
-    const canManagePrincipals = userRole === 'admin' || userRole === 'principal';
+    const canManagePrincipals = userRole === 'admin' || userRole === 'principal' || userRole === 'school';
 
   return (
     <>

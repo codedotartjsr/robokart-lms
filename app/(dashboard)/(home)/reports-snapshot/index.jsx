@@ -112,6 +112,9 @@ const ReportsSnapshot = () => {
     fetchCounts();
   }, []);
 
+  console.log("counts", counts);
+  
+
     // Function to fetch and process data
     const fetchData = async (url, category) => {
       try {

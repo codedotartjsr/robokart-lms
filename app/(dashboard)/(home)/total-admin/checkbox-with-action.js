@@ -22,6 +22,20 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [selectedAdmin, setSelectedAdmin] = useState(null);
     const [userRole, setUserRole] = useState(null);
 
+    const [schoolId, setSchoolId] = useState('');
+    
+    // useEffect(() => {
+    //   const userData = localStorage.getItem('user');
+    //   if (userData) {
+    //       const user = JSON.parse(userData);
+    //       setUserRole(user.role);
+    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
+    //   }
+    //   if (schoolId) {
+    //     fetchAdmins(schoolId);
+    //   }
+    // }, [schoolId]);
+
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -31,9 +45,10 @@ const CheckboxWithAction = ({ onEdit }) => {
       fetchAdmins();
     }, []);
       
-    const fetchAdmins = async () => {
+    const fetchAdmins = async (schoolId) => {
       try {
         const response = await fetch("https://xcxd.online:8080/api/v1/admin/getAllAdmin", {
+          // const response = await fetch(`https://xcxd.online:8080/api/v1/admin/getAllAdmin/${schoolId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -78,7 +93,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       };
 
       // Check if the user is allowed to manage teachers
-    const canManageAdmins = userRole === 'admin' || userRole === 'principal';
+    const canManageAdmins = userRole === 'superadmin';
 
   return (
     <>

@@ -55,8 +55,19 @@ const ProjectHeader = ({ course }) => {
 
   const handleViewStudents = () => {
     // Navigate to the new page with course ID
-    router.push(`/assigned-courses/${course.id}/students`);
+    // router.push(`/assigned-courses/${course.id}/students`);
+    router.push(`/assigned-courses/${newCourses.id}/students`);
   };
+
+  const newCourses = {
+      id: "1",
+      students: [
+          { name: "Alice Johnson"},
+          { name: "Bob Smith"},
+          { name: "Charlie Brown"},
+          { name: "Charlie Champu"},
+      ]
+    }
 
   return (
     <>
@@ -116,20 +127,24 @@ const ProjectHeader = ({ course }) => {
               ))} */}
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Assigned Date</div>
-                <div className="text-sm font-medium text-default-900">{course.assignedDate}</div>
+                {/* <div className="text-sm font-medium text-default-900">{course.assignedDate}</div> */}
+                <div className="text-sm font-medium text-default-900">15 feb 2025</div>
               </div>
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Due Date</div>
-                <div className="text-sm font-medium text-default-900">{course.dueDate}</div>
+                {/* <div className="text-sm font-medium text-default-900">{course.dueDate}</div> */}
+                <div className="text-sm font-medium text-default-900">25 jun 2025</div>
               </div>
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Total Hours</div>
-                <div className="text-sm font-medium text-default-900">{course.totalHours}</div>
+                {/* <div className="text-sm font-medium text-default-900">{course.totalHours}</div> */}
+                <div className="text-sm font-medium text-default-900">40 Hours</div>
               </div>
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Total Students</div>
                 {/* <div className="text-sm font-medium text-default-900">{course.totalPersons}</div> */}
-                <div className="text-sm font-medium text-default-900">{course.students.length}</div>
+                {/* <div className="text-sm font-medium text-default-900">{course.students.length}</div> */}
+                <div className="text-sm font-medium text-default-900">7</div>
               </div>
               {/* {project?.assign?.length > 0 && (
                 <div>
@@ -200,10 +215,13 @@ const ProjectHeader = ({ course }) => {
               )} */}
 
               {/* Clickable Avatar Group */}
-              {course.students.length > 0 && (
+              {/* {course.students.length > 0 && ( */}
+              {newCourses.students.length > 0 && (
                 <div className="flex items-center justify-between cursor-pointer" onClick={handleViewStudents}>
-                  <AvatarGroup max={3} total={course.students.length}>
-                    {course.students.map((student, index) => (
+                  {/* <AvatarGroup max={3} total={course.students.length}> */}
+                  <AvatarGroup max={3} total={newCourses.students.length}>
+                    {/* {course.students.map((student, index) => ( */}
+                    {newCourses.students.map((student, index) => (
                       <Avatar
                         key={index}
                         className="ring-1 ring-background ring-offset-[2px] ring-offset-background"

@@ -19,15 +19,15 @@ import Select from 'react-select';
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
-    const [projects, setProjects] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedCourse, setSelectedCourse] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const router = useRouter();
 
-    const [schools, setSchools] = useState([]);
+    const [teachers, setTeachers] = useState([]);
     const [showSchoolAssign, setShowSchoolAssign] = useState(false);
-    const [selectedSchool, setSelectedSchool] = useState(null);
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [showSchoolsModal, setShowSchoolsModal] = useState(false);
 
     useEffect(() => {
@@ -36,61 +36,62 @@ const CheckboxWithAction = ({ onEdit }) => {
           const user = JSON.parse(userData);
           setUserRole(user.role);
       }
-      fetchProjects();
+      fetchCourses();
     }, []);
 
     const openSchoolAssignModal = (project) => {
-      setSelectedProject(project);
+      setSelectedCourse(project);
       setShowSchoolAssign(true); // Ensure modal/overlay is visible
-      fetchSchools();
+      fetchTeachers();
     };
-    
-    const handleAssignSchool = async () => {
-      if (selectedProject && selectedSchool) {
+
+    const handleAssignTeacher = async () => {
+      if (selectedCourse && selectedTeacher) {
+        console.log("selectedTeacher", selectedTeacher);
+        
         try {
-          const response = await fetch('https://xcxd.online:8080/api/v1/project/addProjectToSchool', {
+          const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/updateTeacher/${selectedTeacher.value}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              projectId: selectedProject._id,
-              schoolId: selectedSchool.value
+              courses: [selectedCourse._id] // Passing only the selected course's ID
             })
           });
           const data = await response.json();
           if (response.ok) {
-            toast.success("Project assigned to school successfully!");
+            toast.success("Course assigned to teacher successfully!");
             setShowSchoolAssign(false); // Close the modal
-            fetchProjects(); // Optionally refresh projects
+            fetchCourses(); // Optionally refresh courses
           } else {
-            throw new Error(data.message || "Failed to assign project to school");
+            throw new Error(data.message || "Failed to assign course to teacher");
           }
         } catch (error) {
-          console.error("Error assigning project to school:", error);
-          toast.error(error.message || "An error occurred while assigning project to school.");
+          console.error("Error assigning course to teacher:", error);
+          toast.error(error.message || "An error occurred while assigning course to teacher.");
         }
       }
     };
-
-    const fetchSchools = async () => {
+    
+    const fetchTeachers = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/school/");
+        const response = await fetch("https://xcxd.online:8080/api/v1/teacher/getAllTeacher");
         const data = await response.json();
         if (response.ok) {
-          setSchools(data.data.map(school => ({ value: school._id, label: school.name })));
+          setTeachers(data.data.map(school => ({ value: school._id, label: school.name })));
         } else {
-          throw new Error(data.message || "Could not fetch schools");
+          throw new Error(data.message || "Could not fetch teachers");
         }
       } catch (error) {
-        console.error("Error fetching schools:", error);
-        toast.error(error.message || "An error occurred while fetching schools.");
+        console.error("Error fetching teachers:", error);
+        toast.error(error.message || "An error occurred while fetching teachers.");
       }
     };
       
-    const fetchProjects = async () => {
+    const fetchCourses = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/project/getAllProject", {
+        const response = await fetch("https://xcxd.online:8080/api/v1/course/getAllCourse", {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -98,59 +99,54 @@ const CheckboxWithAction = ({ onEdit }) => {
         });
         const data = await response.json();
         if (response.ok) {
-          setProjects(data.data);
+          setCourses(data.data);
         } else {
-          throw new Error(data.message || "Could not fetch projects");
+          throw new Error(data.message || "Could not fetch courses");
         }
       } catch (error) {
-        console.error("Error fetching projects:", error);
-        toast.error(error.message || "An error occurred while fetching projects.");
+        console.error("Error fetching courses:", error);
+        toast.error(error.message || "An error occurred while fetching courses.");
       }
     };
 
     const handleDeleteProject = async () => {
-        if (selectedProject) {
-          console.log("api", `https://xcxd.online:8080/api/v1/project/deleteProject/${selectedProject._id}`); 
+        if (selectedCourse) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/project/deleteProject/${selectedProject._id}`, {
+            const response = await fetch(`https://xcxd.online:8080/api/v1/course/deleteCourse/${selectedCourse._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
-              toast.success("Project deleted successfully");
-              fetchProjects(); // Refresh the list after deletion
+              toast.success("Course deleted successfully");
+              fetchCourses(); // Refresh the list after deletion
               setIsModalOpen(false);
             } else {
-              throw new Error(data.message || "Failed to delete project");
+              throw new Error(data.message || "Failed to delete course");
             }
           } catch (error) {
-            console.error("Error deleting project:", error);
-            toast.error(error.message || "An error occurred while deleting the project.");
+            console.error("Error deleting course:", error);
+            toast.error(error.message || "An error occurred while deleting the course.");
           }
         }
       };
     
       const openModalWithProject = (project) => {
-        setSelectedProject(project);
+        setSelectedCourse(project);
         setIsModalOpen(true);
       };
 
-      const handleRowClick = (project) => {
-        localStorage.setItem('selectedProject', JSON.stringify(project));
-        // router.push('/total-school'); // Navigate to the /total-school page
-        router.push(`/total-school?projectId=${project._id}`);
-      };  
-
       const fetchSchoolsForProject = async (projectId) => {
+        console.log("projectId", projectId);
+        
         try {
-            // First find the project details from your projects state
-            const project = projects.find(p => p._id === projectId);
-            setSelectedProject(project);  // Set the selected project here
+            // First find the project details from your courses state
+            const project = courses.find(p => p._id === projectId);
+            setSelectedCourse(project);  // Set the selected project here
     
             const response = await fetch(`https://xcxd.online:8080/api/v1/project/getAllSchoolsOfProject/${projectId}`);
             const data = await response.json();
             if (response.ok) {
-                setSchools(data.data.schools);
+                setTeachers(data.data.schools);
                 setShowSchoolsModal(true);
                 console.log("data.data.schools", data.data.schools);
                 
@@ -193,17 +189,14 @@ const CheckboxWithAction = ({ onEdit }) => {
         <TableRow>
           <TableHead>S. No.</TableHead>
           {/* <TableHead>id</TableHead> */}
-          <TableHead>Project Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Department</TableHead>
-          {/* <TableHead>Description</TableHead> */}
+          <TableHead>Course Name</TableHead>
+          <TableHead>Description</TableHead>
           <TableHead>Created At</TableHead>
           {canManageProjects && <TableHead>Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
-        {projects.map((item, index) => (
+        {courses.map((item, index) => (
           <TableRow
             key={item._id}
             className="hover:bg-muted"
@@ -214,18 +207,11 @@ const CheckboxWithAction = ({ onEdit }) => {
             <TableCell className="font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
-                  {`${item.name}`}
+                  {`${item.title}`}
                 </span>
               </div>
             </TableCell>
-            <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phoneNumber}</TableCell>
-            <TableCell>
-                {item.department}
-            </TableCell>
-            {/* <TableCell>
-                {item.description}
-            </TableCell> */}
+            <TableCell>{item.description}</TableCell>
             <TableCell>{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageProjects && (
             <TableCell className="flex justify-end">
@@ -247,15 +233,6 @@ const CheckboxWithAction = ({ onEdit }) => {
                   onClick={() => openModalWithProject(item)}
                 >
                   <Icon icon="heroicons:trash" className=" h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                  onClick={() => handleRowClick(item)}
-                >
-                  <Icon icon="heroicons:eye" className=" h-4 w-4" />
                 </Button>
                 <Button
                   size="icon"
@@ -286,24 +263,24 @@ const CheckboxWithAction = ({ onEdit }) => {
     {showSchoolAssign && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
-          <h3 className="text-lg font-bold mb-4">Assign School to Project</h3>
+          <h3 className="text-lg font-bold mb-4">Assign teacher to a course</h3>
           <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Project Name:</label>
+            <label className="block text-sm font-medium mb-1">Course Name:</label>
             <div className="p-2 bg-gray-100 rounded border">
-              {selectedProject?.name}
+              {selectedCourse?.title}
             </div>
           </div>
           <div className="mb-3">
-            <label className="block text-sm font-medium mb-1">Assign to School:</label>
+            <label className="block text-sm font-medium mb-1">Assign to teacher:</label>
             <Select
-              options={schools}
-              onChange={setSelectedSchool}
+              options={teachers}
+              onChange={setSelectedTeacher}
               className="w-full"
             />
           </div>
           <div className="flex items-center justify-between">
             <Button color="secondary" onClick={() => setShowSchoolAssign(false)}>Cancel</Button>
-            <Button color="primary" onClick={handleAssignSchool}>Assign</Button>
+            <Button color="primary" onClick={handleAssignTeacher}>Assign</Button>
           </div>
         </div>
       </div>
@@ -314,22 +291,22 @@ const CheckboxWithAction = ({ onEdit }) => {
         <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
           <h3 className="text-lg font-bold mb-4">Manage Schools for Project</h3>
           {/* <div className="mb-2 text-center text-md">
-            Project: <strong>{selectedProject?.name}</strong>
+            Project: <strong>{selectedCourse?.name}</strong>
           </div> */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Project Name:</label>
             <div className="p-2 bg-gray-100 rounded border">
-              {selectedProject?.name}
+              {selectedCourse?.name}
             </div>
           </div>
-          {schools.length > 0 ? (
+          {teachers.length > 0 ? (
             <div className="overflow-y-auto max-h-60">
-              {schools.map((school) => (
+              {teachers.map((school) => (
                 <div key={school._id} className="flex justify-between items-center p-2 border-b">
                   <span>{school.name}</span>
                   <button 
                     className="p-2 text-red-500 hover:text-red-700"
-                    onClick={() => removeSchoolFromProject(selectedProject._id, school._id)}
+                    onClick={() => removeSchoolFromProject(selectedCourse._id, school._id)}
                   >
                     Remove
                   </button>
@@ -338,7 +315,7 @@ const CheckboxWithAction = ({ onEdit }) => {
             </div>
             ) : (
             <div className="text-center p-4">
-              <span className="text-gray-500">No schools are currently assigned to this project.</span>
+              <span className="text-gray-500">No teachers are currently assigned to this course.</span>
             </div>
           )}
           <div className="flex items-center justify-end mt-4">
@@ -353,7 +330,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteProject}
         // message="Are you sure you want to delete this image?"
-        message={`Are you sure you want to remove Project "${selectedProject?.name}" from this school?`}
+        message={`Are you sure you want to remove course "${selectedCourse?.title}" from this school?`}
     />
     </>
   );

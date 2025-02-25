@@ -23,19 +23,44 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
     const [schoolId, setSchoolId] = useState('');
 
+    // useEffect(() => {
+    //   const userData = localStorage.getItem('user');
+    //   if (userData) {
+    //       const user = JSON.parse(userData);
+    //       setUserRole(user.role);
+    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
+    //   }
+    //   if (schoolId) {
+    //     fetchStudents(schoolId);
+    //   }
+    // }, [schoolId]);
+
     useEffect(() => {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-          const user = JSON.parse(userData);
-          setUserRole(user.role);
-          setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
+      // Attempt to get the schoolId from the URL
+      const urlSchoolId = new URLSearchParams(window.location.search).get('schoolId');
+
+      // If the schoolId exists in the URL, use it; otherwise, use the one from local storage
+      if (urlSchoolId) {
+          setSchoolId(urlSchoolId);
+      } else {
+          const userData = localStorage.getItem('user');
+          if (userData) {
+              const user = JSON.parse(userData);
+              setUserRole(user.role);
+              setSchoolId(user.school?._id);  // Assuming the school ID is stored under user.school._id
+          }
       }
+  }, []);
+
+  useEffect(() => {
+      // Fetch students only if schoolId is available
       if (schoolId) {
-        fetchStudents(schoolId);
+          fetchStudents(schoolId);
       }
-    }, [schoolId]);
+  }, [schoolId]);
       
     const fetchStudents = async (schoolId) => {
+      // const schoolId = new URLSearchParams(window.location.search).get('schoolId');
       try {
         const response = await fetch(`https://xcxd.online:8080/api/v1/student/getAllStudents/${schoolId}`, {
           method: 'GET',
@@ -64,7 +89,7 @@ const CheckboxWithAction = ({ onEdit }) => {
             const data = await response.json();
             if (response.ok) {
               toast.success("Student deleted successfully");
-              fetchStudents(); // Refresh the list after deletion
+              fetchStudents(schoolId); // Refresh the list after deletion
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete student");
@@ -81,8 +106,11 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
+      console.log("userRole", userRole);
+      
+
       // Check if the user is allowed to manage teachers
-    const canManageStudents = userRole === 'admin' || userRole === 'principal' || userRole === 'teacher';
+    const canManageStudents = userRole === 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
 
   return (
     <>
