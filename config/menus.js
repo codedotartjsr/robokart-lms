@@ -1,6 +1,15 @@
 import {
   DashBoard,
-  Graph
+  Graph,
+  User,
+  Book,
+  Building,
+  Flag,
+  Building2,
+  List,
+  ListFill,
+  ClipBoard2,
+  MenuBar
 } from "@/components/svg";
 
 export const menusConfig = {
@@ -20,25 +29,25 @@ export const menusConfig = {
           {
             title: "All Projects",
             href: "/total-project",
-            icon: Graph,
+            icon: Building,
             roles: ["superadmin", "admin", "project"],
           },
           {
             title: "All Schools",
             href: "/total-school",
-            icon: Graph,
+            icon: Building2,
             roles: ["superadmin", "admin", "project"],
           },
           {
             title: "All Courses",
             href: "/total-courses",
-            icon: Graph,
+            icon: Book,
             roles: ["superadmin", "admin", "project"],
           },
           {
             title: "All Admins",
             href: "/total-admin",
-            icon: Graph,
+            icon: ListFill,
             roles: ["superadmin", "admin", "project"],
           },
           // {
@@ -73,25 +82,25 @@ export const menusConfig = {
           {
             title: "Principals",
             href: "/total-principal",
-            icon: Graph,
+            icon: ListFill,
             roles: ["project", "school", "principal"],
           },
           {
             title: "Teachers",
             href: "/total-teacher",
-            icon: Graph,
+            icon: MenuBar,
             roles: ["project", "school", "principal", "teacher"],
           },
           {
             title: "Students",
             href: "/total-student",
-            icon: Graph,
+            icon: List,
             roles: ["project", "school", "principal", "teacher", "student"],
           },
           {
             title: "My Courses",
             href: "/my-courses",
-            icon: Graph,
+            icon: Book,
             roles: ["project", "school", "teacher"],
           },
           // {
@@ -120,7 +129,7 @@ export const menusConfig = {
           {
             title: "Assigned Courses",
             href: "/assigned-courses",
-            icon: Graph,
+            icon: ClipBoard2,
             // roles: ["superadmin", "project", "school", "teacher", "student"],
             roles: ["project", "school", "teacher"],
           },
@@ -133,13 +142,13 @@ export const menusConfig = {
           {
             title: "My Profile",
             href: "/user-profile",
-            icon: Graph,
+            icon: User,
             roles: ["superadmin", "admin", "project", "school", "principal", "teacher", "student"],
           },
           {
             title: "Support",
             href: "/contact-support",
-            icon: Graph,
+            icon: Flag,
             roles: ["superadmin", "admin", "project", "school", "principal", "teacher", "student"],
           },
         ],

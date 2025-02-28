@@ -147,7 +147,7 @@ const TailwindUiTable = () => {
     };
 
     // Determine if the user is an admin or principal
-    const canManagePrincipals = userRole === 'admin' || userRole === 'principal' || userRole === 'school';
+    const canManagePrincipals = userRole === 'superadmin' || 'admin' || userRole === 'principal' || userRole === 'school';
 
     return (
       <div className="space-y-6">

@@ -240,7 +240,7 @@ const DetailsModal = ({ school, onClose }) => {
       <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-md mx-auto">
         <h3 className="text-lg font-bold mb-4">Total Details for {school.name}</h3>
         <ul className="list-none space-y-2">
-          <li><a href={`/total-admin?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Admins</a></li>
+          {/* <li><a href={`/total-admin?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Admins</a></li> */}
           <li><a href={`/total-principal?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Principals</a></li>
           <li><a href={`/total-teacher?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Teachers</a></li>
           <li><a href={`/total-student?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Students</a></li>

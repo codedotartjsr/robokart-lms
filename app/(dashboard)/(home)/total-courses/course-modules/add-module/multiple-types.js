@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 // import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
-import BasicSelect from "./basic-select";
+// import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // const schema = z.object({
 //   firstname: z
@@ -41,12 +41,15 @@ import { useState, useEffect } from "react";
 // });
 
 const schema = z.object({
-    name: z.string().min(1, "Required").max(30),
+    schoolname: z.string().min(1, "Required").max(30),
+    // address: z.string().min(1, "Required").max(30),
     phone: z.string().length(10, "Must be 10 digits"),
     email: z.string().email("Must be a valid email"),
     password: z.string().min(1, "Required"),
+    // gender: z.enum(["male", "female", "others"], "Gender is required"),
     state: z.string().min(1, "Required").max(30),
     district: z.string().min(1, "Required").max(30),
+    udise: z.string().length(11, "Must be 11 digits"),
   });
 
 // const schema = z.object({
@@ -71,28 +74,7 @@ const MultipleTypes = ({ onAdded }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [schoolId, setSchoolId] = useState('');
-  
-    // useEffect(() => {
-    //   const user = JSON.parse(localStorage.getItem('user'));
-    //   if (user && user.school && user.school._id) {
-    //     setSchoolId(user.school._id);
-    //   }
-    // }, []);
 
-    useEffect(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlSchoolId = urlParams.get('schoolId');
-      const localUserData = localStorage.getItem('user');
-      const user = localUserData ? JSON.parse(localUserData) : null;
-
-      if (urlSchoolId) {
-          setSchoolId(urlSchoolId);
-      } else if (user && user.school && user.school._id) {
-          setSchoolId(user.school._id);
-      }
-  }, []);
-    
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
 //   function onSubmit(data) {
@@ -108,36 +90,33 @@ const MultipleTypes = ({ onAdded }) => {
 
 const onSubmit = async (data) => {
     console.log("data", data);
-    console.log("schoolId", schoolId);    
 
     const payload = {
-        name: data.name,
-        phoneNumber: data.phone,
+        name: data.schoolname,
+        // address: data.address,
+        phone_no: data.phone,
         email: data.email,
         password: data.password,
-        school: schoolId,  // Assuming a static value or you can add this as a form field
         state: data.state,
         district: data.district,
+        udise: data.udise
     };
-
-    console.log("schoolId", schoolId);
-    
 
     console.log("Formatted data for API:", payload);
     
     try {
-      const response = await fetch('https://xcxd.online:8080/api/v1/teacher/addTeacher', {
+      const response = await fetch('https://xcxd.online:8080/api/v1/school/addSchool', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const result = await response.json();
       if (response.ok) {
-        toast.success("New Teacher Registered Successfully");
+        toast.success("New School Registered Successfully");
         reset(); // Reset form fields
         onAdded(); // Call the callback to hide the form
       } else {
-        throw new Error(result.message || "Failed to add teacher");
+        throw new Error(result.message || "Failed to add school");
       }
     } catch (error) {
       toast.error(error.message || "An error occurred during submission");
@@ -149,28 +128,28 @@ const onSubmit = async (data) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label
-            htmlFor="name"
+            htmlFor="schoolname"
             className={cn("", {
-              "text-destructive": errors.name,
+              "text-destructive": errors.schoolname,
             })}
           >
-            First Name
+            School Name
           </Label>
           <Input
             type="text"
-            {...register("name")}
-            placeholder="Please enter first name"
+            {...register("schoolname")}
+            placeholder="Please enter school name"
             className={cn("", {
-              "border-destructive focus:border-destructive": errors.name,
+              "border-destructive focus:border-destructive": errors.schoolname,
             })}
           />
-          {errors.name && (
+          {errors.schoolname && (
             <p
               className={cn("text-xs", {
-                "text-destructive": errors.name,
+                "text-destructive": errors.schoolname,
               })}
             >
-              {errors.name.message}
+              {errors.schoolname.message}
             </p>
           )}
         </div>
@@ -218,6 +197,34 @@ const onSubmit = async (data) => {
             <p className="text-xs text-destructive">{errors.email.message}</p>
           )}
         </div>
+
+        {/* <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="address"
+            className={cn("", {
+              "text-destructive": errors.address,
+            })}
+          >
+            Address
+          </Label>
+          <Input
+            type="text"
+            {...register("address")}
+            placeholder="Please enter school address"
+            className={cn("", {
+              "border-destructive focus:border-destructive": errors.address,
+            })}
+          />
+          {errors.address && (
+            <p
+              className={cn("text-xs", {
+                "text-destructive": errors.address,
+              })}
+            >
+              {errors.address.message}
+            </p>
+          )}
+        </div> */}
 
         <div className="flex flex-col gap-2">
           <Label
@@ -271,6 +278,34 @@ const onSubmit = async (data) => {
               })}
             >
               {errors.district.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="udise"
+            className={cn("", {
+              "text-destructive": errors.udise,
+            })}
+          >
+            UDISE
+          </Label>
+          <Input
+            type="text"
+            {...register("udise")}
+            placeholder="Please enter school name"
+            className={cn("", {
+              "border-destructive focus:border-destructive": errors.udise,
+            })}
+          />
+          {errors.udise && (
+            <p
+              className={cn("text-xs", {
+                "text-destructive": errors.udise,
+              })}
+            >
+              {errors.udise.message}
             </p>
           )}
         </div>

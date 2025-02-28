@@ -143,6 +143,7 @@ const LogInForm = () => {
             principal: '/total-principal',
             admin: '/total-admin',
             superadmin: '/dashboard',
+            school: '/total-principal'
           };
           router.push(roleBasedRedirect[result.data.role] || '/dashboard');
   

@@ -73,12 +73,25 @@ const MultipleTypes = ({ onAdded }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [schoolId, setSchoolId] = useState('');
   
+    // useEffect(() => {
+    //   const user = JSON.parse(localStorage.getItem('user'));
+    //   if (user && user.school && user.school._id) {
+    //     setSchoolId(user.school._id);
+    //   }
+    // }, []);
+
     useEffect(() => {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user && user.school && user.school._id) {
-        setSchoolId(user.school._id);
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSchoolId = urlParams.get('schoolId');
+      const localUserData = localStorage.getItem('user');
+      const user = localUserData ? JSON.parse(localUserData) : null;
+
+      if (urlSchoolId) {
+          setSchoolId(urlSchoolId);
+      } else if (user && user.school && user.school._id) {
+          setSchoolId(user.school._id);
       }
-    }, []);
+  }, []);
   
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -106,8 +119,8 @@ const onSubmit = async (data) => {
         email: data.email,
         password: data.password,
         gender: data.gender,
-        // school: schoolId  // Assuming a static value or you can add this as a form field
-        school: '67bb5e4e33fe1a10ab28bc8b'
+        school: schoolId  // Assuming a static value or you can add this as a form field
+        // school: '67bb5e4e33fe1a10ab28bc8b'
     };
 
     console.log("Formatted data for API:", payload);

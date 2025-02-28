@@ -84,6 +84,7 @@ import MultipleTypes from "./add-school/multiple-types";
 import UpdateMultipleTypes from "./add-school/UpdateMultipleTypes";
 import FileUploaderPage from './add-school/file-upload';
 import { Icon } from "@iconify/react";
+import Link from 'next/link';
 
 const TailwindUiTable = () => {
     const [showForm, setShowForm] = useState(false);
@@ -93,6 +94,7 @@ const TailwindUiTable = () => {
     const [userRole, setUserRole] = useState(null);
     const [isSpecificProject, setIsSpecificProject] = useState(false);
     const [cardTitle, setCardTitle] = useState("List of Schools");
+    const [projectId, setProjectId] = useState(null)
     
     // Fetch user role from localStorage
     useEffect(() => {
@@ -102,6 +104,7 @@ const TailwindUiTable = () => {
           setUserRole(user.role);
       }
       const projectId = new URLSearchParams(window.location.search).get('projectId');
+      setProjectId(projectId);
       // setIsSpecificProject(!!projectId);
       if (projectId) {
         setIsSpecificProject(true);
@@ -144,7 +147,16 @@ const TailwindUiTable = () => {
         {/* <Card title="List of Schools"> */}
         <Card title={cardTitle}>
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold"></h1>
+            {/* <h1 className="text-xl font-bold"></h1> */}
+            {projectId ?
+            <div className="flex-grow-0">
+              <Link href='/total-project' className="text-blue-600 hover:text-blue-800 flex items-center gap-2">
+                <Icon icon="heroicons-outline:arrow-left" className="h-5 w-5" />
+                    Back to Projects
+              </Link>
+            </div>
+            : <h1 className="text-xl font-bold"></h1>
+            }
             {showForm || showFileUploader ? (
               <button
                 className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2 mb-5"
@@ -153,7 +165,7 @@ const TailwindUiTable = () => {
                 <Icon icon="heroicons-outline:x" className="h-5 w-5" />
                 Cancel
               </button>
-            ) : canManageSchools && (
+            ) : canManageSchools && !isSpecificProject && (
               <div className="flex gap-2 mb-5">
               <button
                   className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2"

@@ -43,11 +43,15 @@ const CheckboxWithAction = ({ onEdit }) => {
   
         if (urlSchoolId) {
           setSchoolId(urlSchoolId);
+          console.log("urlSchoolId----", urlSchoolId);
+          
         } else {
           const userData = localStorage.getItem('user');
           if (userData) {
             const user = JSON.parse(userData);
             setUserRole(user.role);
+            console.log("user.school._id----", user.school._id);
+            
             if (user.school && user.school._id) {
               setSchoolId(user.school._id);  // Assuming the school ID is stored in user data under 'school._id'
             }
@@ -76,6 +80,8 @@ const CheckboxWithAction = ({ onEdit }) => {
     console.log("schoolId", schoolId);  
       
     const fetchPrincipals = async (schoolId) => {
+      console.log("schoolId", schoolId);
+      
       try {
         const response = await fetch(`https://xcxd.online:8080/api/v1/principal/getAllPricipal/${schoolId}`, {
           // const response = await fetch('https://xcxd.online:8080/api/v1/principal/getAllPricipal/67bb5e4e33fe1a10ab28bc8b', {
@@ -123,7 +129,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       };
 
       // Check if the user is allowed to manage teachers
-    const canManagePrincipals = userRole === 'admin' || userRole === 'principal' || userRole === 'school';
+    const canManagePrincipals = userRole === 'superadmin' || 'admin' || userRole === 'principal' || userRole === 'school';
 
   return (
     <>

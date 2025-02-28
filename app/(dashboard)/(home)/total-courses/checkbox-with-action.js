@@ -135,52 +135,106 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
-      const fetchSchoolsForProject = async (projectId) => {
-        console.log("projectId", projectId);
+    //   const fetchSchoolsForProject = async (projectId) => {
+    //     console.log("projectId", projectId);
         
-        try {
-            // First find the project details from your courses state
-            const project = courses.find(p => p._id === projectId);
-            setSelectedCourse(project);  // Set the selected project here
+    //     try {
+    //         // First find the project details from your courses state
+    //         const project = courses.find(p => p._id === projectId);
+    //         setSelectedCourse(project);  // Set the selected project here
     
-            const response = await fetch(`https://xcxd.online:8080/api/v1/project/getAllSchoolsOfProject/${projectId}`);
-            const data = await response.json();
-            if (response.ok) {
-                setTeachers(data.data.schools);
-                setShowSchoolsModal(true);
-                console.log("data.data.schools", data.data.schools);
+    //         const response = await fetch(`https://xcxd.online:8080/api/v1/course/allTeachersOfCourses/${projectId}`);
+    //         const data = await response.json();
+    //         if (response.ok) {
+    //             setTeachers(data.data.schools);
+    //             setShowSchoolsModal(true);
+    //             console.log("data.data.schools", data.data.schools);
                 
+    //         } else {
+    //             throw new Error(data.message || "Failed to fetch schools for the project");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching schools for the project:", error);
+    //         toast.error(error.message || "An error occurred while fetching schools for the project.");
+    //     }
+    // };
+
+      const fetchTeachersForCourse = async (courseId) => {
+        try {
+            const course = courses.find(p => p._id === courseId);
+            setSelectedCourse(course); 
+            const response = await fetch(`https://xcxd.online:8080/api/v1/course/allTeachersOfCourses/${courseId}`);
+            const data = await response.json();
+            if (response.ok && data.success) {
+                setTeachers(data.data); // Assuming the data returned is an array of teachers
+                setShowSchoolsModal(true); // Show the modal after fetching data
             } else {
-                throw new Error(data.message || "Failed to fetch schools for the project");
+                // Handle case where no teachers are assigned
+                if (response.status === 404 || data.msg === "No Teacher assigned with the given course ID") {
+                    setTeachers([]); // Set teachers to an empty array
+                    setShowSchoolsModal(true); // Still show the modal but with no teachers
+                } else {
+                    throw new Error(data.msg || "Failed to fetch teachers for the course");
+                }
             }
         } catch (error) {
-            console.error("Error fetching schools for the project:", error);
-            toast.error(error.message || "An error occurred while fetching schools for the project.");
+            console.error("Error fetching teachers for the course:", error);
+            toast.error(error.message || "An error occurred while fetching teachers for the course.");
         }
     };
       
-      const removeSchoolFromProject = async (projectId, schoolId) => {
+      // const removeSchoolFromProject = async (projectId, schoolId) => {
+      //   try {
+      //     const response = await fetch('https://xcxd.online:8080/api/v1/project/removeProjectFromSchool', {
+      //       method: 'PUT',
+      //       headers: { 'Content-Type': 'application/json' },
+      //       body: JSON.stringify({ projectId, schoolId })
+      //     });
+      //     const data = await response.json();
+      //     if (response.ok) {
+      //       toast.success("School removed from the project successfully!");
+      //       fetchSchoolsForProject(projectId); // Refresh the list
+      //     } else {
+      //       throw new Error(data.message || "Failed to remove school from the project");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error removing school from the project:", error);
+      //     toast.error(error.message || "An error occurred while removing the school from the project.");
+      //   }
+      // };
+
+      const removeTeacherFromCourse = async (teacherId, courseId) => {
         try {
-          const response = await fetch('https://xcxd.online:8080/api/v1/project/removeProjectFromSchool', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ projectId, schoolId })
-          });
-          const data = await response.json();
-          if (response.ok) {
-            toast.success("School removed from the project successfully!");
-            fetchSchoolsForProject(projectId); // Refresh the list
-          } else {
-            throw new Error(data.message || "Failed to remove school from the project");
-          }
+            const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/removeCourseTeachers/${teacherId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ courses: [courseId] })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                toast.success("Teacher removed from the course successfully!");
+                fetchTeachersForCourse(courseId); // Refresh the list after removal
+            } else {
+                throw new Error(data.message || "Failed to remove teacher from the course");
+            }
         } catch (error) {
-          console.error("Error removing school from the project:", error);
-          toast.error(error.message || "An error occurred while removing the school from the project.");
+            console.error("Error removing teacher from the course:", error);
+            toast.error(error.message || "An error occurred while removing the teacher from the course.");
         }
-      };
+    };
+    
+
+      const handleRowClick = (project) => {
+        localStorage.setItem('selectedProject', JSON.stringify(project));
+        // router.push('/total-school'); // Navigate to the /total-school page
+        router.push(`/total-courses/course-modules/?courseId=${project._id}`);
+      };  
 
       // Check if the user is allowed to manage teachers
     const canManageProjects = userRole === 'superadmin' || 'admin';
+
+    console.log("selectedCourse", selectedCourse);
+    
 
   return (
     <>
@@ -239,6 +293,15 @@ const CheckboxWithAction = ({ onEdit }) => {
                   variant="outline"
                   className="h-7 w-7"
                   color="secondary"
+                  onClick={() => handleRowClick(item)}
+                >
+                  <Icon icon="heroicons:eye" className=" h-4 w-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-7 w-7"
+                  color="secondary"
                   onClick={() => openSchoolAssignModal(item)}
                 >
                   <Icon icon="heroicons:plus" className="h-4 w-4" />
@@ -248,7 +311,8 @@ const CheckboxWithAction = ({ onEdit }) => {
                   variant="outline"
                   className="h-7 w-7"
                   color="secondary"
-                  onClick={() => fetchSchoolsForProject(item._id)}
+                  // onClick={() => fetchSchoolsForProject(item._id)}
+                  onClick={() => fetchTeachersForCourse(item._id)}
                 >
                   <Icon icon="heroicons:minus" className="h-4 w-4" />
                 </Button>
@@ -289,24 +353,24 @@ const CheckboxWithAction = ({ onEdit }) => {
     {showSchoolsModal && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
-          <h3 className="text-lg font-bold mb-4">Manage Schools for Project</h3>
+          <h3 className="text-lg font-bold mb-4">Manage Teachers for Course</h3>
           {/* <div className="mb-2 text-center text-md">
-            Project: <strong>{selectedCourse?.name}</strong>
+            Project: <strong>{selectedCourse?.title}</strong>
           </div> */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Project Name:</label>
             <div className="p-2 bg-gray-100 rounded border">
-              {selectedCourse?.name}
+              {selectedCourse?.title}
             </div>
           </div>
           {teachers.length > 0 ? (
             <div className="overflow-y-auto max-h-60">
-              {teachers.map((school) => (
-                <div key={school._id} className="flex justify-between items-center p-2 border-b">
-                  <span>{school.name}</span>
+              {teachers.map((teacher) => (
+                <div key={teacher._id} className="flex justify-between items-center p-2 border-b">
+                  <span>{teacher.name} - {teacher.email}</span>
                   <button 
                     className="p-2 text-red-500 hover:text-red-700"
-                    onClick={() => removeSchoolFromProject(selectedCourse._id, school._id)}
+                    onClick={() => removeTeacherFromCourse(teacher._id, selectedCourse._id)}
                   >
                     Remove
                   </button>
@@ -324,13 +388,14 @@ const CheckboxWithAction = ({ onEdit }) => {
         </div>
       </div>
     )}
+    
 
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteProject}
         // message="Are you sure you want to delete this image?"
-        message={`Are you sure you want to remove course "${selectedCourse?.title}" from this school?`}
+        message={`Are you sure you want to remove course "${selectedCourse?.title}"?`}
     />
     </>
   );

@@ -61,6 +61,8 @@ const CheckboxWithAction = ({ onEdit }) => {
       
     const fetchStudents = async (schoolId) => {
       // const schoolId = new URLSearchParams(window.location.search).get('schoolId');
+      console.log("api", `https://xcxd.online:8080/api/v1/student/getAllStudents/${schoolId}`);
+      
       try {
         const response = await fetch(`https://xcxd.online:8080/api/v1/student/getAllStudents/${schoolId}`, {
           method: 'GET',
@@ -110,7 +112,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
 
       // Check if the user is allowed to manage teachers
-    const canManageStudents = userRole === 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
+    const canManageStudents = userRole === 'superadmin' || 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
 
   return (
     <>

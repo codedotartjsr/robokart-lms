@@ -1,4 +1,5 @@
-"use client";
+// UpdateMultipleTypes.js
+"use client"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,138 +10,82 @@ import { cn } from "@/lib/utils";
 // import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
-import BasicSelect from "./basic-select";
+// import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from "react";
-
-// const schema = z.object({
-//   firstname: z
-//     .string()
-//     .min(3, { message: "First name must be at least 3 charecters." })
-//     .max(30, { message: "The First's name must not exceed 30 characters." }),
-//   lastname: z
-//     .string()
-//     .min(3, { message: "Last name must be at least 3 charecters." })
-//     .max(30, { message: "The Last's name must not exceed 30 characters." }),
-//   phone: z.string().refine((value) => value.length === 10, {
-//     message: "Phone number must be exactly 10 characters long.",
-//   }),
-//   city: z.string().min(3, { message: "Enter minimum 3 charecters" }),
-//   web: z.string().url({ message: "Enter a valid Email address" }),
-//   inputMessage: z
-//     .string()
-//     .max(30, { message: "Message should not be exceed 30 charecters." }),
-//   state: z.string().min(1, { message: "State is required." }),
-//   district: z.string().min(1, { message: "District is required." }),
-//   school: z.string().min(1, { message: "School is required." }),
-//   udise: z.string().min(3, { message: "UDISE must be at least 3 characters." }),
-//   selectCourses: z.string().min(1, { message: "Please select at least one course." }),
-//   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-//   email: z.string().email({ message: "Enter a valid email address" }),
-//   gender: z.string().min(1, { message: "Gender is required." }),
-// });
+import { useState } from "react";
 
 const schema = z.object({
-    name: z.string().min(1, "Required").max(30),
-    phone: z.string().length(10, "Must be 10 digits"),
-    email: z.string().email("Must be a valid email"),
-    password: z.string().min(1, "Required"),
-    state: z.string().min(1, "Required").max(30),
-    district: z.string().min(1, "Required").max(30),
-  });
+  schoolname: z.string().min(1, "Required").max(30),
+  // address: z.string().min(1, "Required").max(30),
+  phone: z.string().length(10, "Must be 10 digits"),
+  email: z.string().email("Must be a valid email"),
+  // password: z.string().min(1, "Required"),
+  // gender: z.enum(["male", "female", "others"], "Gender is required"),
+  state: z.string().min(1, "Required").max(30),
+  district: z.string().min(1, "Required").max(30),
+});
 
-// const schema = z.object({
-//     firstname: z.string().min(3).max(30),
-//     lastname: z.string().min(3).max(30),
-//     phone: z.string().length(10),
-//     email: z.string().email(),
-//     password: z.string().min(6),
-//     gender: z.string(),
-// });
-  
-
-const MultipleTypes = ({ onAdded }) => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm({
+const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
+    // defaultValues: initialData
+    defaultValues: {
+      schoolname: initialData.name,
+      lastName: initialData.lastName,
+      phone: initialData.phone_no,
+      email: initialData.email,
+      password: initialData.password,
+      state: initialData.state,
+      district: initialData.district,
+    }
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [schoolId, setSchoolId] = useState('');
   
-    // useEffect(() => {
-    //   const user = JSON.parse(localStorage.getItem('user'));
-    //   if (user && user.school && user.school._id) {
-    //     setSchoolId(user.school._id);
-    //   }
-    // }, []);
-
-    useEffect(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlSchoolId = urlParams.get('schoolId');
-      const localUserData = localStorage.getItem('user');
-      const user = localUserData ? JSON.parse(localUserData) : null;
-
-      if (urlSchoolId) {
-          setSchoolId(urlSchoolId);
-      } else if (user && user.school && user.school._id) {
-          setSchoolId(user.school._id);
-      }
-  }, []);
-    
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-//   function onSubmit(data) {
-//     toast({
-//       title: "You submitted the following values:",
-//       description: (
-//         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-//           <code className="text-primary-foreground">{JSON.stringify(data, null, 2)}</code>
-//         </pre>
-//       ),
-//     });
-//   }
+  console.log("initialData", initialData);
+  
 
-const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
     console.log("data", data);
-    console.log("schoolId", schoolId);    
 
-    const payload = {
-        name: data.name,
-        phoneNumber: data.phone,
+    // Construct the payload dynamically
+    let payload = {
+        name: data.schoolname,
+        // address: data.address,
+        phone_no: data.phone,
         email: data.email,
-        password: data.password,
-        school: schoolId,  // Assuming a static value or you can add this as a form field
         state: data.state,
         district: data.district,
+        // udise: data.udise
     };
 
-    console.log("schoolId", schoolId);
-    
+    // Only add password to the payload if it's been provided
+    if (data.password && data.password.trim() !== "") {
+        payload.password = data.password;
+    }
 
     console.log("Formatted data for API:", payload);
+
+    console.log("api is", `{https://xcxd.online:8080/api/v1/school/updateSchool/${initialData._id}}`);
+    
     
     try {
-      const response = await fetch('https://xcxd.online:8080/api/v1/teacher/addTeacher', {
-        method: 'POST',
+      const response = await fetch(`https://xcxd.online:8080/api/v1/school/updateSchool/${initialData._id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const result = await response.json();
       if (response.ok) {
-        toast.success("New Teacher Registered Successfully");
-        reset(); // Reset form fields
-        onAdded(); // Call the callback to hide the form
+        toast.success("School updated successfully");
+        reset();
+        onUpdated();
       } else {
-        throw new Error(result.message || "Failed to add teacher");
+        throw new Error("Failed to update school");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred during submission");
+      toast.error(error.message);
     }
   };
 
@@ -149,28 +94,28 @@ const onSubmit = async (data) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label
-            htmlFor="name"
+            htmlFor="schoolname"
             className={cn("", {
-              "text-destructive": errors.name,
+              "text-destructive": errors.schoolname,
             })}
           >
-            First Name
+            School Name
           </Label>
           <Input
             type="text"
-            {...register("name")}
-            placeholder="Please enter first name"
+            {...register("schoolname")}
+            placeholder="Please enter school name"
             className={cn("", {
-              "border-destructive focus:border-destructive": errors.name,
+              "border-destructive focus:border-destructive": errors.schoolname,
             })}
           />
-          {errors.name && (
+          {errors.schoolname && (
             <p
               className={cn("text-xs", {
-                "text-destructive": errors.name,
+                "text-destructive": errors.schoolname,
               })}
             >
-              {errors.name.message}
+              {errors.schoolname.message}
             </p>
           )}
         </div>
@@ -218,6 +163,34 @@ const onSubmit = async (data) => {
             <p className="text-xs text-destructive">{errors.email.message}</p>
           )}
         </div>
+
+        {/* <div className="flex flex-col gap-2">
+          <Label
+            htmlFor="address"
+            className={cn("", {
+              "text-destructive": errors.address,
+            })}
+          >
+            Address
+          </Label>
+          <Input
+            type="text"
+            {...register("address")}
+            placeholder="Please enter school address"
+            className={cn("", {
+              "border-destructive focus:border-destructive": errors.address,
+            })}
+          />
+          {errors.address && (
+            <p
+              className={cn("text-xs", {
+                "text-destructive": errors.address,
+              })}
+            >
+              {errors.address.message}
+            </p>
+          )}
+        </div> */}
 
         <div className="flex flex-col gap-2">
           <Label
@@ -314,4 +287,4 @@ const onSubmit = async (data) => {
   );
 };
 
-export default MultipleTypes;
+export default UpdateMultipleTypes;
