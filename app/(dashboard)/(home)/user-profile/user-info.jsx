@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { User, Phone, Location, Calender, CalenderCheck } from "@/components/svg";
 // import FigmaImage from "@/public/images/all-img/figma.png"
 // import ReactImage from "@/public/images/all-img/react.png"
+import SuperAdminInfo from './SuperAdminInfo';
 
 import {
     DashBoard,
@@ -26,6 +27,11 @@ const UserInfo = () => {
       year: 'numeric', month: 'long', day: 'numeric'
     }) : 'Not available';
   };
+
+    if (userData.role === "superadmin") {
+        // Render the SuperAdminInfo component for superadmins
+        return <SuperAdminInfo userData={userData} />;
+    }
 
   const formatRoleLabel = (role) => {
     return role ? `${role.charAt(0).toUpperCase() + role.slice(1)} ID` : "Role ID";
