@@ -14,12 +14,32 @@ import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import ConfirmationModal from '../../../ConfirmationModal';
 import moment from 'moment';
+import Select from 'react-select';
+import './style.css';
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedChapter, setSelectedChapter] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const [chapters, setChapters] = useState([]);
+    const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+    const [chaptersOptions, setChaptersOptions] = useState([]);
+
+    const [selectedChapters, setSelectedChapters] = useState([]);
+
+    const [images, setImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [video, setVideo] = useState(null);
+    const [timeTaken, setTimeTaken] = useState('');
+    const [videoUrl, setVideoUrl] = useState(null);
+    const [showVideoPlayer, setShowVideoPlayer] = useState(false);
 
     useEffect(() => {
       const userData = localStorage.getItem('user');
@@ -30,11 +50,20 @@ const CheckboxWithAction = ({ onEdit }) => {
       fetchDataBasedOnContext();
     }, []);
 
+    useEffect(() => {
+      const options = chapters.map(chapter => ({
+        value: chapter._id,
+        label: `${chapter.title} - ${chapter.description}`
+      }));
+      setChaptersOptions(options);
+    }, [chapters]);
+
     const fetchDataBasedOnContext = async () => {
         const courseId = new URLSearchParams(window.location.search).get('courseId');
         const moduleId = new URLSearchParams(window.location.search).get('moduleId');
         if (courseId) {
-            const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModules/${courseId}`;
+            // const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModules/${courseId}`;
+            const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModulesWithURLs/${courseId}`;
             try {
                 const response = await fetch(apiURL, { method: 'GET' });
                 const data = await response.json();
@@ -54,7 +83,9 @@ const CheckboxWithAction = ({ onEdit }) => {
             }
         }
     };
-    
+
+    console.log("chapters", chapters);    
+
     const handleDeleteChapter = async () => {
       if (selectedChapter) {     
         console.log("selectedChapter._id", selectedChapter._id);
@@ -86,6 +117,85 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
+      const openTeacherFeedbackModal = (project) => {
+        // setSelectedCourse(project);
+        setShowFeedbackForm(true); // Ensure modal/overlay is visible
+        // fetchTeachers();
+      };
+
+  const handleImageChange = e => {
+    const newFiles = Array.from(e.target.files);
+    const totalFiles = images.length + newFiles.length;
+
+    if (totalFiles > 2) {
+        toast.error('You can only upload up to 2 images.');
+        return;
+    }
+
+    const selectedFiles = [...images, ...newFiles].slice(0, 2);
+    const filePreviews = selectedFiles.map(file => URL.createObjectURL(file));
+
+    setImages(selectedFiles);
+    setImagePreviews(filePreviews);
+};
+
+const removeImage = (index) => {
+  const newImages = images.filter((_, i) => i !== index);
+  const newImagePreviews = imagePreviews.filter((_, i) => i !== index);
+
+  setImages(newImages);
+  setImagePreviews(newImagePreviews);
+
+  // Revoke the URL to free up memory
+  URL.revokeObjectURL(imagePreviews[index]);
+};
+
+      const handleVideoChange = e => {
+          setVideo(e.target.files[0]);
+      };
+
+      const handleSubmit = async () => {
+        const formData = new FormData();
+        images.forEach(img => formData.append('images', img));
+        if (video) {
+            formData.append('videos', video);
+        }
+        const user = JSON.parse(localStorage.getItem('user'));
+        const courseId = new URLSearchParams(window.location.search).get('courseId');
+
+        formData.append('data', JSON.stringify({
+            teacher: user._id,
+            course: courseId,
+            timeTaken,
+            modules: selectedChapters.map(chapter => ({
+                moduleId: chapter.moduleId,
+                chapters: [{ chapterId: chapter.value }]
+            }))
+        }));
+
+        try {
+            const response = await fetch('https://xcxd.online:8080/api/v1/courseCompletedTest/updatedCompleteMedia', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                toast.success("Course completion data successfully uploaded.");
+                setShowFeedbackForm(false);
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to upload course completion data.");
+            }
+        } catch (error) {
+            toast.error(error.message || "An error occurred while uploading data.");
+        }
+    };
+
+    const handleVideoClick = (chapter) => {
+      // Assuming 'videoUrl' is a property of 'chapter' object; adjust according to your actual data structure
+      setVideoUrl(chapter.url); 
+      setShowVideoPlayer(true);
+  };  
+
       // Check if the user is allowed to manage teachers
     const canManageChapters = userRole === 'superadmin' || 'admin';    
 
@@ -112,24 +222,80 @@ const CheckboxWithAction = ({ onEdit }) => {
             {canManageChapters && (
             <TableCell className="flex justify-end">
               <div className="flex gap-3">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  color="secondary"
-                  className="h-7 w-7"
-                  onClick={() => onEdit(chapter)}
-                >
-                  <Icon icon="heroicons:pencil" className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className=" h-7 w-7"
-                  color="secondary"
-                  onClick={() => openModalWithChapter(chapter)}
-                >
-                  <Icon icon="heroicons:trash" className=" h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        color="secondary"
+                        className="h-7 w-7"
+                        onClick={() => onEdit(chapter)}
+                      >
+                        <Icon icon="heroicons:pencil" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Edit Chapter</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className=" h-7 w-7"
+                        color="secondary"
+                        onClick={() => openModalWithChapter(chapter)}
+                      >
+                        <Icon icon="heroicons:trash" className=" h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Delete Chapter</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7"
+                        color="secondary"
+                        onClick={() => openTeacherFeedbackModal(chapter)}
+                      >
+                        <Icon icon="heroicons:plus" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Add, What did you teach ?</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7"
+                        color="secondary"
+                        onClick={() => handleVideoClick(chapter)}
+                      >
+                        <Icon icon="heroicons:arrow-right" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Watch Video</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
               </div>
             </TableCell>
             )}
@@ -144,6 +310,122 @@ const CheckboxWithAction = ({ onEdit }) => {
         )}
       </TableBody>
     </Table>
+
+        {showFeedbackForm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
+                    <h3 className="text-lg font-bold mb-4">Teacher Course Completion</h3>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium mb-1">Time Taken (minutes):</label>
+                        <input type="number" value={timeTaken} onChange={e => setTimeTaken(e.target.value)} className="w-full p-2 border rounded" />
+                    </div>
+                    <div className="mb-3">
+                      <label className="block text-sm font-medium mb-1">Upload Images:</label>
+                      <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+                      <div className="flex space-x-2 mt-2">
+                          {imagePreviews.map((src, index) => (
+                            <div key={index} className="relative w-24 h-24">
+                              <img src={src} alt={`Preview ${index}`} className="object-cover rounded w-full h-full" />
+                              <button
+                                className="absolute top-0 right-0 text-red rounded-full p-1"
+                                onClick={() => removeImage(index)}
+                                aria-label="Remove image"
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                              >
+                                <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7.707 7.293a1 1 0 011.414 0L10 8.586l.879-.879a1 1 0 111.414 1.414L11.414 10l.879.879a1 1 0 11-1.414 1.414L10 11.414l-.879.879a1 1 0 01-1.414-1.414L8.586 10 7.707 9.121a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium mb-1">Upload Video:</label>
+                        <input type="file" accept="video/*" onChange={handleVideoChange} />
+                    </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium mb-1">Select Chapters:</label>
+                        <Select options={chapters.map(ch => ({ value: ch._id, label: ch.title, moduleId: ch.module }))} onChange={setSelectedChapters} isMulti className="w-full" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <Button color="secondary" onClick={() => setShowFeedbackForm(false)}>Cancel</Button>
+                        <Button color="primary" onClick={handleSubmit}>Submit</Button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* {showVideoPlayer && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+              <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+                  <div className="p-4">
+                      <h3 className="text-lg font-bold">Video Player</h3>
+                      <video src={videoUrl} controls autoPlay className="w-full h-auto">
+                          Sorry, your browser does not support embedded videos.
+                      </video>
+                  </div>
+                  <div className="flex justify-end p-2">
+                      <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                          onClick={() => setShowVideoPlayer(false)}>Close</button>
+                  </div>
+              </div>
+          </div>
+        )} */}
+
+        {/* {showVideoPlayer && (
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+      <div className="bg-white shadow-xl rounded-lg overflow-hidden max-w-full mx-2">
+          <div className="p-4">
+              <h3 className="text-lg font-bold">Video Player</h3>
+              <video src={videoUrl} controls autoPlay className="responsive-video">
+                  Sorry, your browser does not support embedded videos.
+              </video>
+          </div>
+          <div className="flex justify-end p-2">
+              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                  onClick={() => setShowVideoPlayer(false)}>Close</button>
+          </div>
+      </div>
+  </div>
+)} */}
+
+{/* {showVideoPlayer && (
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+      <div className="bg-white shadow-xl rounded-lg overflow-hidden video-container mx-2">
+          <div className="p-4">
+              <h3 className="text-lg font-bold">Video Player</h3>
+              <video src={videoUrl} controls autoPlay className="responsive-video">
+                  Sorry, your browser does not support embedded videos.
+              </video>
+          </div>
+          <div className="flex justify-end p-2">
+              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                  onClick={() => setShowVideoPlayer(false)}>Close</button>
+          </div>
+      </div>
+  </div>
+)} */}
+
+{showVideoPlayer && (
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-animate">
+      <div className="bg-white shadow-xl rounded-lg overflow-hidden video-container mx-2">
+          <div className="p-4">
+              <h3 className="text-lg font-bold">Video Player</h3>
+              <video src={videoUrl} controls autoPlay className="responsive-video">
+                  Sorry, your browser does not support embedded videos.
+              </video>
+          </div>
+          <div className="flex justify-end p-2">
+              <button className="close-button"
+                  onClick={() => setShowVideoPlayer(false)}>Close</button>
+          </div>
+      </div>
+  </div>
+)}
+
+
+
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}

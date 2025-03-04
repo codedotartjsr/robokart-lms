@@ -40,7 +40,10 @@ const TailwindUiTable = () => {
     };
 
     // Determine if the user is an admin or principal
-    const canManageCourseModules = userRole === 'superadmin'|| 'admin';
+    const canManageCourseModules = userRole === 'superadmin' || userRole === 'admin';
+
+    // Determine the appropriate route based on the user's role
+    const navigationLink = (userRole === 'superadmin' || userRole === 'admin') ? "/total-courses" : "/assigned-courses";
 
     return (
       <div className="space-y-6">
@@ -52,7 +55,7 @@ const TailwindUiTable = () => {
                 Back to Courses
             </Link> */}
             <div className="flex-grow-0">
-              <Link href="/total-courses" className="text-blue-600 hover:text-blue-800 flex items-center gap-2">
+              <Link href={navigationLink} className="text-blue-600 hover:text-blue-800 flex items-center gap-2">
                 <Icon icon="heroicons-outline:arrow-left" className="h-5 w-5" />
                     Back to Courses
               </Link>

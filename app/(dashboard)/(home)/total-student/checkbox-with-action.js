@@ -14,6 +14,13 @@ import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import ConfirmationModal from '../ConfirmationModal';
 import moment from 'moment';
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -162,15 +169,25 @@ const CheckboxWithAction = ({ onEdit }) => {
             {canManageStudents && (
             <TableCell className="flex justify-end">
               <div className="flex gap-3">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  color="secondary"
-                  className="h-7 w-7"
-                  onClick={() => onEdit(item)}
-                >
-                  <Icon icon="heroicons:pencil" className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        color="secondary"
+                        className="h-7 w-7"
+                        onClick={() => onEdit(item)}
+                      >
+                        <Icon icon="heroicons:pencil" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Edit Student</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
                 {/* <Button
                   size="icon"
                   variant="outline"
@@ -179,15 +196,25 @@ const CheckboxWithAction = ({ onEdit }) => {
                 >
                   <Icon icon="heroicons:eye" className=" h-4 w-4" />
                 </Button> */}
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className=" h-7 w-7"
-                  color="secondary"
-                  onClick={() => openModalWithStudent(item)}
-                >
-                  <Icon icon="heroicons:trash" className=" h-4 w-4" />
-                </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className=" h-7 w-7"
+                        color="secondary"
+                        onClick={() => openModalWithStudent(item)}
+                      >
+                        <Icon icon="heroicons:trash" className=" h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Delete Student</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
               </div>
             </TableCell>
             )}

@@ -16,6 +16,13 @@ import ConfirmationModal from '../ConfirmationModal';
 import moment from 'moment';
 import { useRouter } from "next/navigation";
 import Select from 'react-select';
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -270,52 +277,99 @@ const CheckboxWithAction = ({ onEdit }) => {
             {canManageProjects && (
             <TableCell className="flex justify-end">
               <div className="flex gap-3">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  color="secondary"
-                  className="h-7 w-7"
-                  onClick={() => onEdit(item)}
-                >
-                  <Icon icon="heroicons:pencil" className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className=" h-7 w-7"
-                  color="secondary"
-                  onClick={() => openModalWithProject(item)}
-                >
-                  <Icon icon="heroicons:trash" className=" h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                  onClick={() => handleRowClick(item)}
-                >
-                  <Icon icon="heroicons:eye" className=" h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                  onClick={() => openSchoolAssignModal(item)}
-                >
-                  <Icon icon="heroicons:plus" className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                  // onClick={() => fetchSchoolsForProject(item._id)}
-                  onClick={() => fetchTeachersForCourse(item._id)}
-                >
-                  <Icon icon="heroicons:minus" className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        color="secondary"
+                        className="h-7 w-7"
+                        onClick={() => onEdit(item)}
+                      >
+                        <Icon icon="heroicons:pencil" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Edit Course</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className=" h-7 w-7"
+                        color="secondary"
+                        onClick={() => openModalWithProject(item)}
+                      >
+                        <Icon icon="heroicons:trash" className=" h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Delete Course</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7"
+                        color="secondary"
+                        onClick={() => handleRowClick(item)}
+                      >
+                        <Icon icon="heroicons:eye" className=" h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>View Modules</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7"
+                        color="secondary"
+                        onClick={() => openSchoolAssignModal(item)}
+                      >
+                        <Icon icon="heroicons:plus" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Assign Teacher</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7"
+                        color="secondary"
+                        // onClick={() => fetchSchoolsForProject(item._id)}
+                        onClick={() => fetchTeachersForCourse(item._id)}
+                      >
+                        <Icon icon="heroicons:minus" className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent color="primary">
+                      <p>Remove Teacher</p>
+                      <TooltipArrow className="fill-primary" />
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
               </div>
             </TableCell>
             )}

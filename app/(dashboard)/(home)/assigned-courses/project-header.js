@@ -50,6 +50,8 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
 const ProjectHeader = ({ course }) => {
+
+  console.log("course", course); 
   
   const router = useRouter();
 
@@ -68,6 +70,19 @@ const ProjectHeader = ({ course }) => {
           { name: "Charlie Champu"},
       ]
     }
+
+    const handleModuleViewClick = (project) => {
+      localStorage.setItem('selectedProject', JSON.stringify(project));
+      // router.push('/total-school'); // Navigate to the /total-school page
+      router.push(`/total-courses/course-modules/?courseId=${project._id}`);
+    }; 
+    
+    const handleCourseCompletionClick = (project) => {
+      localStorage.setItem('selectedProject', JSON.stringify(project));
+      // router.push('/total-school'); // Navigate to the /total-school page
+      // router.push(`/total-courses/course-completion/?courseName=${project.title}/?courseId=${project._id}`);
+      router.push(`/total-courses/course-completion?courseName=${encodeURIComponent(project.title)}&courseId=${project._id}`);
+    }; 
 
   return (
     <>
@@ -130,22 +145,30 @@ const ProjectHeader = ({ course }) => {
                 {/* <div className="text-sm font-medium text-default-900">{course.assignedDate}</div> */}
                 <div className="text-sm font-medium text-default-900">15 feb 2025</div>
               </div>
-              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
-                <div className="text-sm font-medium text-default-500">Due Date</div>
+              {/* <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
+                <div className="text-sm font-medium text-default-500">Due Date</div> */}
                 {/* <div className="text-sm font-medium text-default-900">{course.dueDate}</div> */}
-                <div className="text-sm font-medium text-default-900">25 jun 2025</div>
-              </div>
+                {/* <div className="text-sm font-medium text-default-900">25 jun 2025</div>
+              </div> */}
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Total Hours</div>
                 {/* <div className="text-sm font-medium text-default-900">{course.totalHours}</div> */}
                 <div className="text-sm font-medium text-default-900">40 Hours</div>
               </div>
-              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
-                <div className="text-sm font-medium text-default-500">Total Students</div>
+              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer" onClick={() => handleModuleViewClick(course)}>
+                <div className="text-sm font-medium text-default-500">Modules</div>
+                <div className="text-sm font-medium text-default-900">view</div>
+              </div>
+              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer" onClick={() => handleCourseCompletionClick(course)}>
+                <div className="text-sm font-medium text-default-500">Course Completion</div>
+                <div className="text-sm font-medium text-default-900">view</div>
+              </div>
+              {/* <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
+                <div className="text-sm font-medium text-default-500">Total Students</div> */}
                 {/* <div className="text-sm font-medium text-default-900">{course.totalPersons}</div> */}
                 {/* <div className="text-sm font-medium text-default-900">{course.students.length}</div> */}
-                <div className="text-sm font-medium text-default-900">7</div>
-              </div>
+                {/* <div className="text-sm font-medium text-default-900">7</div>
+              </div> */}
               {/* {project?.assign?.length > 0 && (
                 <div>
                   <AvatarGroup max={3} total={project.assign.length}>

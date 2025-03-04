@@ -1,0 +1,153 @@
+/* Responsive video CSS */
+.responsive-video {
+    width: 100%; /* Full width */
+    aspect-ratio: 16 / 9; /* Common aspect ratio for videos */
+}
+
+/* Container adjustments for larger screens */
+@media (min-width: 1150px) {
+    .video-container {
+        max-width: 70%; /* You can adjust this value based on your design needs */
+        margin: auto; /* Centers the video in the available space */
+    }
+}
+
+
+
+
+/* Enhanced Video Container CSS */
+.video-container {
+    /* max-width: 90%; */
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Responsive video CSS */
+.responsive-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px 10px 0 0; /* Rounded top corners */
+}
+
+/* Animation for modal appearance */
+.modal-animate {
+    animation: scaleIn 0.3s forwards;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Improved button styling */
+.close-button {
+    background-color: #e53e3e; /* A richer shade of red */
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+        background-color: #c53030; /* Darken on hover */
+    }
+}
+
+
+
+
+
+.media-thumbnail {
+    margin: 5px 5px 5px 0px;
+    width: 100px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    text-decoration: none;
+    color: black;
+  }
+  
+  .media-icon {
+    font-size: 25px; /* Adjust based on your design preference */
+    color: black;
+  }
+  
+  .media-image {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .media-thumbnail {
+      width: 90px; /* Smaller size on smaller screens */
+      height: 68px;
+    }
+  
+    .media-icon {
+      font-size: 20px; /* Smaller icon size on smaller screens */
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .media-thumbnail {
+      width: 90px;
+      height: 56px;
+    }
+  
+    .media-icon {
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: 370px) {
+    .media-thumbnail {
+      width: 75px;
+      height: 56px;
+    }
+  
+    .media-icon {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 355px) {
+    .media-thumbnail {
+      width: 65px;
+      height: 56px;
+    }
+  
+    .media-icon {
+      font-size: 16px;
+    }
+  }
+  
+
+
+  /* Add this in your global CSS file */
+@media (min-width: 500px) {
+    .custom-flex { /* Change class name as appropriate */
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        /* space-y-0; */
+    }
+}
+
+/* Default styles */
+.custom-flex {
+    display: flex;
+    flex-direction: column;
+    /* space-y-4; */
+}
