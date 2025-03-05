@@ -143,7 +143,7 @@ const TailwindUiTable = () => {
     const canManageSchools = userRole === 'superadmin'|| 'admin' && !isSpecificProject;
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pt-4">
         {/* <Card title="List of Schools"> */}
         <Card title={cardTitle}>
           <div className="flex justify-between items-center">
@@ -159,14 +159,14 @@ const TailwindUiTable = () => {
             }
             {showForm || showFileUploader ? (
               <button
-                className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2 mb-5"
+                className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2"
                 onClick={handleCloseForm}
               >
                 <Icon icon="heroicons-outline:x" className="h-5 w-5" />
                 Cancel
               </button>
             ) : canManageSchools && !isSpecificProject && (
-              <div className="flex gap-2 mb-5">
+              <div className="flex gap-2">
               <button
                   className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2"
                   onClick={handleUploadFiles}

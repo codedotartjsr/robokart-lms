@@ -40,7 +40,7 @@ const TailwindUiTable = () => {
     const canManageProjects = userRole === 'superadmin' || 'admin';
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-4">
             <Card title="Course Completion">
                 <div className={`flex ${isWideScreen ? 'flex-row justify-between items-center' : 'flex-col space-y-4'}`}>
                     <div className="flex justify-start">

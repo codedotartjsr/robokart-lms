@@ -1,0 +1,25 @@
+@media (max-width: 600px) {
+    .table-header, .table-cell {
+        padding: 8px;
+    }
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .text-sm {
+        font-size: 12px;
+    }
+    .button {
+        padding: 4px 8px;
+    }
+}
+
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+}

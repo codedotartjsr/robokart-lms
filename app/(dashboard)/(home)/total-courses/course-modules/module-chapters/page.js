@@ -46,7 +46,7 @@ const TailwindUiTable = () => {
     const canManageSchools = userRole === 'superadmin'|| 'admin';
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pt-4">
         <Card title="List of Chapters">
           <div className="flex justify-between items-center">
             {/* <h1 className="text-xl font-bold"></h1> */}

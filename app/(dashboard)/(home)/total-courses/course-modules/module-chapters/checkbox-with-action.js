@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DefaultPagination from "@/components/ui/default-pagination";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +41,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [timeTaken, setTimeTaken] = useState('');
     const [videoUrl, setVideoUrl] = useState(null);
     const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+
+    const [chaptersToShow, setChaptersToShow] = useState([]); // chapters to show per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 5;
 
     useEffect(() => {
       const userData = localStorage.getItem('user');
@@ -71,6 +77,8 @@ const CheckboxWithAction = ({ onEdit }) => {
                   const module = data.modules.find(mod => mod._id === moduleId);
                   if (module) {
                       setChapters(module.chapters);
+                      setTotalPages(Math.ceil(module.chapters.length / recordsPerPage));
+                      setPageData(1); // Make sure this is called after setting chapters
                   } else {
                       toast.error("Module not found");
                   }
@@ -85,6 +93,26 @@ const CheckboxWithAction = ({ onEdit }) => {
     };
 
     console.log("chapters", chapters);    
+
+    const setPageData = (page) => {
+      const startIndex = (page - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      console.log('Setting page data:', chapters.slice(startIndex, endIndex)); // Check what is being sliced
+      setChaptersToShow(chapters.slice(startIndex, endIndex));
+      setCurrentPage(page);
+    };
+  
+    useEffect(() => {
+      if (chapters.length > 0) {
+        setPageData(currentPage);
+      }
+    }, [currentPage, chapters]); // Adding chapters dependency to refresh the slice when data changes 
+    
+    const handlePageChange = newPage => {
+      if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+        setPageData(newPage);
+      }
+    };
 
     const handleDeleteChapter = async () => {
       if (selectedChapter) {     
@@ -212,10 +240,10 @@ const removeImage = (index) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-      {chapters.length > 0 ? (
-        chapters.map((chapter, index) => (
+      {chaptersToShow.length > 0 ? (
+        chaptersToShow.map((chapter, index) => (
           <TableRow key={chapter._id}>
-            <TableCell>{index + 1}</TableCell>
+            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             <TableCell>{chapter.title}</TableCell>
             <TableCell>{chapter.description}</TableCell>
             <TableCell>{moment(chapter.createdAt).format('YYYY-MM-DD')}</TableCell>
@@ -310,6 +338,12 @@ const removeImage = (index) => {
         )}
       </TableBody>
     </Table>
+
+    <DefaultPagination 
+      currentPage={currentPage} 
+      totalPages={totalPages} 
+      onPageChange={handlePageChange} 
+    />
 
         {showFeedbackForm && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

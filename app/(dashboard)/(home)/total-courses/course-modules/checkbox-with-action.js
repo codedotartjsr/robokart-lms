@@ -22,6 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip";
+  import DefaultPagination from "@/components/ui/default-pagination";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,6 +32,12 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [showChaptersModal, setShowChaptersModal] = useState(false);
     const [currentModuleChapters, setCurrentModuleChapters] = useState([]);
     const router = useRouter();
+
+    const [modulesToShow, setModulesToShow] = useState([]); // modules to show per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 5;
+
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -49,6 +56,8 @@ const CheckboxWithAction = ({ onEdit }) => {
                 const data = await response.json();
                 if (response.ok) {
                     setModules(data.modules);
+                    setTotalPages(Math.ceil(data.modules.length / recordsPerPage));
+                    setPageData(1); // Make sure this is called after setting modules
                 } else {
                     throw new Error(data.message || "Failed to fetch modules");
                 }
@@ -59,6 +68,26 @@ const CheckboxWithAction = ({ onEdit }) => {
         }
     };
 
+    const setPageData = (page) => {
+        const startIndex = (page - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+        console.log('Setting page data:', modules.slice(startIndex, endIndex)); // Check what is being sliced
+        setModulesToShow(modules.slice(startIndex, endIndex));
+        setCurrentPage(page);
+      };
+    
+      useEffect(() => {
+        if (modules.length > 0) {
+          setPageData(currentPage);
+        }
+      }, [currentPage, modules]); // Adding modules dependency to refresh the slice when data changes 
+      
+      const handlePageChange = newPage => {
+        if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+          setPageData(newPage);
+        }
+      };
+      
     const handleDeleteModule = async () => {
         if (selectedModule) {
           try {
@@ -126,10 +155,10 @@ const CheckboxWithAction = ({ onEdit }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-      {modules.length > 0 ? (
-        modules.map((module, index) => (
+      {modulesToShow.length > 0 ? (
+        modulesToShow.map((module, index) => (
             <TableRow key={module._id} className="hover:bg-muted">
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
                 <TableCell className="font-medium text-card-foreground/80">{module.title}</TableCell>
                 <TableCell>{module.description}</TableCell>
                 <TableCell>{moment(module.createdAt).format('YYYY-MM-DD')}</TableCell>
@@ -207,6 +236,12 @@ const CheckboxWithAction = ({ onEdit }) => {
         )}
       </TableBody>
     </Table>
+
+    <DefaultPagination 
+        currentPage={currentPage} 
+        totalPages={totalPages} 
+        onPageChange={handlePageChange} 
+    />
 
     {/* {showDetailsModal && (
       <DetailsModal school={currentSchoolDetails} onClose={() => setShowDetailsModal(false)} />

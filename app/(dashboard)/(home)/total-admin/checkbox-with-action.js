@@ -22,6 +22,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import DefaultPagination from "@/components/ui/default-pagination";
+
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [admins, setAdmins] = useState([]);
@@ -30,6 +32,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
 
     const [schoolId, setSchoolId] = useState('');
+
+    const [adminsToShow, setAdminsToShow] = useState([]); // Admins to show per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 5;
     
     // useEffect(() => {
     //   const userData = localStorage.getItem('user');
@@ -52,7 +59,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       fetchAdmins();
     }, []);
       
-    const fetchAdmins = async (schoolId) => {
+    const fetchAdmins = async () => {
       try {
         const response = await fetch("https://xcxd.online:8080/api/v1/admin/getAllAdmin", {
           // const response = await fetch(`https://xcxd.online:8080/api/v1/admin/getAllAdmin/${schoolId}`, {
@@ -64,12 +71,34 @@ const CheckboxWithAction = ({ onEdit }) => {
         const data = await response.json();
         if (response.ok) {
           setAdmins(data.data);
+          setTotalPages(Math.ceil(data.data.length / recordsPerPage));
+          setPageData(1); // Make sure this is called after setting admins
         } else {
           throw new Error(data.message || "Could not fetch admins");
         }
       } catch (error) {
         console.error("Error fetching admins:", error);
         toast.error(error.message || "An error occurred while fetching admins.");
+      }
+    };
+
+    const setPageData = (page) => {
+      const startIndex = (page - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      console.log('Setting page data:', admins.slice(startIndex, endIndex)); // Check what is being sliced
+      setAdminsToShow(admins.slice(startIndex, endIndex));
+      setCurrentPage(page);
+    };
+  
+    useEffect(() => {
+      if (admins.length > 0) {
+        setPageData(currentPage);
+      }
+    }, [currentPage, admins]); // Adding admins dependency to refresh the slice when data changes 
+    
+    const handlePageChange = newPage => {
+      if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+        setPageData(newPage);
       }
     };
 
@@ -117,13 +146,13 @@ const CheckboxWithAction = ({ onEdit }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {admins.map((item, index) => (
+        {adminsToShow.map((item, index) => (
           <TableRow
             key={item._id}
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{index + 1}</TableCell>
+            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             <TableCell className="font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
@@ -197,6 +226,14 @@ const CheckboxWithAction = ({ onEdit }) => {
         ))}
       </TableBody>
     </Table>
+
+    {/* <DefaultPagination /> */}
+    <DefaultPagination 
+      currentPage={currentPage} 
+      totalPages={totalPages} 
+      onPageChange={handlePageChange} 
+    />
+
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}

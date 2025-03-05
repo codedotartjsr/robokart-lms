@@ -44,7 +44,7 @@ const CardSnippet = ({ title, code, children }) => {
   const hexPrimary2 = hslToHex(hslPrimary2);
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center mt-6">
+      <CardHeader className="flex flex-row items-center">
         {title && (
           <CardTitle className="flex-1 leading-normal"> {title}</CardTitle>
         )}

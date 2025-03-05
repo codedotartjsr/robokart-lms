@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DefaultPagination from "@/components/ui/default-pagination";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -29,6 +30,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const [schoolId, setSchoolId] = useState('');
+
+    const [studentsToShow, setStudentsToShow] = useState([]); // students to show per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 5;
 
     // useEffect(() => {
     //   const userData = localStorage.getItem('user');
@@ -80,12 +86,34 @@ const CheckboxWithAction = ({ onEdit }) => {
         const data = await response.json();
         if (response.ok) {
           setStudents(data.data);
+          setTotalPages(Math.ceil(data.data.length / recordsPerPage));
+          setPageData(1); // Make sure this is called after setting students
         } else {
           throw new Error(data.message || "Could not fetch students");
         }
       } catch (error) {
         console.error("Error fetching students:", error);
         toast.error(error.message || "An error occurred while fetching students.");
+      }
+    };
+
+    const setPageData = (page) => {
+      const startIndex = (page - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      console.log('Setting page data:', students.slice(startIndex, endIndex)); // Check what is being sliced
+      setStudentsToShow(students.slice(startIndex, endIndex));
+      setCurrentPage(page);
+    };
+  
+    useEffect(() => {
+      if (students.length > 0) {
+        setPageData(currentPage);
+      }
+    }, [currentPage, students]); // Adding students dependency to refresh the slice when data changes 
+    
+    const handlePageChange = newPage => {
+      if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+        setPageData(newPage);
       }
     };
 
@@ -142,13 +170,13 @@ const CheckboxWithAction = ({ onEdit }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {students.map((item, index) => (
+        {studentsToShow.map((item, index) => (
           <TableRow
             key={item._id}
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{index + 1}</TableCell>
+            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             {/* <TableCell>{item._id}</TableCell> */}
             <TableCell className="font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
@@ -222,6 +250,13 @@ const CheckboxWithAction = ({ onEdit }) => {
         ))}
       </TableBody>
     </Table>
+
+    <DefaultPagination 
+      currentPage={currentPage} 
+      totalPages={totalPages} 
+      onPageChange={handlePageChange} 
+    />
+
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DefaultPagination from "@/components/ui/default-pagination";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -30,6 +31,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [currentSchoolDetails, setCurrentSchoolDetails] = useState(null);
+    
+    const [schoolsToShow, setSchoolsToShow] = useState([]); // schools to show per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 5;
 
     const handleViewDetails = (school) => {
       setCurrentSchoolDetails(school);
@@ -84,9 +90,13 @@ const CheckboxWithAction = ({ onEdit }) => {
               if (data.data.schools) {
                   // If the data comes from 'getAllSchoolsOfProject'
                   setSchools(data.data.schools);
+                  setTotalPages(Math.ceil(data.data.schools.length / recordsPerPage));
+                  setPageData(1); // Make sure this is called after setting schools
               } else {
                   // If the data comes directly as an array of schools
                   setSchools(data.data);
+                  setTotalPages(Math.ceil(data.data.length / recordsPerPage));
+                  setPageData(1);
               }
               console.log("schools", schools);
           } else {
@@ -97,6 +107,26 @@ const CheckboxWithAction = ({ onEdit }) => {
           toast.error(error.message || "An error occurred while fetching data.");
       }
   };
+
+    const setPageData = (page) => {
+      const startIndex = (page - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      console.log('Setting page data:', schools.slice(startIndex, endIndex)); // Check what is being sliced
+      setSchoolsToShow(schools.slice(startIndex, endIndex));
+      setCurrentPage(page);
+    };
+
+    useEffect(() => {
+      if (schools.length > 0) {
+        setPageData(currentPage);
+      }
+    }, [currentPage, schools]); // Adding schools dependency to refresh the slice when data changes 
+    
+    const handlePageChange = newPage => {
+      if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+        setPageData(newPage);
+      }
+    };
 
     const handleDeleteSchool = async () => {
         if (selectedSchool) {
@@ -147,14 +177,14 @@ const CheckboxWithAction = ({ onEdit }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-      {schools.length > 0 ? (
-        schools.map((item, index) => (
+      {schoolsToShow.length > 0 ? (
+        schoolsToShow.map((item, index) => (
           <TableRow
             key={item._id}
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{index + 1}</TableCell>
+            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             {/* <TableCell>{item._id}</TableCell> */}
             <TableCell className="font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
@@ -247,6 +277,12 @@ const CheckboxWithAction = ({ onEdit }) => {
       </TableBody>
     </Table>
 
+    <DefaultPagination 
+      currentPage={currentPage} 
+      totalPages={totalPages} 
+      onPageChange={handlePageChange} 
+    />
+
     {showDetailsModal && (
       <DetailsModal school={currentSchoolDetails} onClose={() => setShowDetailsModal(false)} />
     )}
@@ -287,3 +323,4 @@ const DetailsModal = ({ school, onClose }) => {
     </div>
   );
 };
+
