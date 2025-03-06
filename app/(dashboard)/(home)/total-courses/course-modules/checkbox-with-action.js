@@ -144,26 +144,26 @@ const CheckboxWithAction = ({ onEdit }) => {
 
   return (
     <>
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
-          <TableHead>S. No.</TableHead>
-          <TableHead>Module Title</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Created At</TableHead>
-          {canManageModules && <TableHead>Action</TableHead>}
+          <TableHead className="table-header serial-number">S. No.</TableHead>
+          <TableHead className="table-header name">Module Title</TableHead>
+          <TableHead className="table-header description">Description</TableHead>
+          <TableHead className="table-header">Created At</TableHead>
+          {canManageModules && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
       {modulesToShow.length > 0 ? (
         modulesToShow.map((module, index) => (
             <TableRow key={module._id} className="hover:bg-muted">
-                <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-                <TableCell className="font-medium text-card-foreground/80">{module.title}</TableCell>
-                <TableCell>{module.description}</TableCell>
-                <TableCell>{moment(module.createdAt).format('YYYY-MM-DD')}</TableCell>
+                <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
+                <TableCell className="table-cell name font-medium text-card-foreground/80">{module.title}</TableCell>
+                <TableCell className="table-cell description">{module.description}</TableCell>
+                <TableCell className="table-cell">{moment(module.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageModules && (
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell flex justify-end">
               <div className="flex gap-3">
                 <TooltipProvider>
                     <Tooltip>

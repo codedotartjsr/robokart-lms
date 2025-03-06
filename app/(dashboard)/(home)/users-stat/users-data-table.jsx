@@ -43,3 +43,49 @@ const UsersDataTable = ({ users }) => {
 };
 
 export default UsersDataTable;
+
+
+
+
+// import React from 'react';
+// import { ScrollArea } from "@/components/ui/scroll-area";
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableHead,
+//   TableHeader,
+//   TableRow,
+// } from "@/components/ui/table";
+
+// const UsersDataTable = ({ users }) => {
+//   // Define row height and calculate total height needed
+//   const rowHeight = 40; // height of each row in pixels
+//   const maxTableHeight = 440; // maximum height of the table
+//   const calculatedHeight = Math.min(users.length * rowHeight, maxTableHeight);
+
+//   return (
+//     <div style={{ height: `${calculatedHeight}px` }}>
+//       <ScrollArea className="h-full">
+//         <Table className="border border-default-200">
+//           <TableHeader>
+//             <TableRow className="border-b border-default-200">
+//               <TableHead className="text-sm h-10 font-medium text-default-800">Top Courses</TableHead>
+//               <TableHead className="text-sm h-10 font-medium text-default-800 text-right">Created At</TableHead>
+//             </TableRow>
+//           </TableHeader>
+//           <TableBody>
+//             {users.map((item) => (
+//               <TableRow key={item.id} className="border-b border-default-200">
+//                 <TableCell className="text-xs text-default-600 py-2">{item.category}</TableCell>
+//                 <TableCell className="text-xs text-default-600 text-right pr-6 py-2">{item.createdAt}</TableCell>
+//               </TableRow>
+//             ))}
+//           </TableBody>
+//         </Table>
+//       </ScrollArea>
+//     </div>
+//   );
+// };
+
+// export default UsersDataTable;

@@ -223,18 +223,18 @@ const CheckboxWithAction = ({ onEdit }) => {
 
   return (
     <>
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
-          <TableHead>S. No.</TableHead>
+          <TableHead className="table-header serial-number">S. No.</TableHead>
           {/* <TableHead>id</TableHead> */}
-          <TableHead>Project Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Department</TableHead>
+          <TableHead className="table-header name">Project Name</TableHead>
+          <TableHead className="table-header email">Email</TableHead>
+          <TableHead className="table-header phone">Phone</TableHead>
+          <TableHead className="table-header name">Department</TableHead>
           {/* <TableHead>Description</TableHead> */}
-          <TableHead>Created At</TableHead>
-          {canManageProjects && <TableHead>Action</TableHead>}
+          <TableHead className="table-header">Created At</TableHead>
+          {canManageProjects && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -244,26 +244,26 @@ const CheckboxWithAction = ({ onEdit }) => {
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
+            <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             {/* <TableCell>{item._id}</TableCell> */}
-            <TableCell className="font-medium text-card-foreground/80">
+            <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
                   {`${item.name}`}
                 </span>
               </div>
             </TableCell>
-            <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phoneNumber}</TableCell>
-            <TableCell>
+            <TableCell className="table-cell email">{item.email}</TableCell>
+            <TableCell className="table-cell phone">{item.phoneNumber}</TableCell>
+            <TableCell className="table-cell name">
                 {item.department}
             </TableCell>
             {/* <TableCell>
                 {item.description}
             </TableCell> */}
-            <TableCell>{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
+            <TableCell className="table-cell">{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageProjects && (
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell flex justify-end">
               <div className="flex gap-3">
                 <TooltipProvider>
                   <Tooltip>

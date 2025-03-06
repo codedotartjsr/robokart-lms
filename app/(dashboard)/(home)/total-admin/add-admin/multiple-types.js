@@ -130,11 +130,15 @@ const onSubmit = async (data) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4"> */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+
+        {/* <div className="flex flex-col gap-2 mb-2"> */}
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
+
           <Label
             htmlFor="firstname"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.firstname,
             })}
           >
@@ -142,6 +146,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("firstname")}
             placeholder="Please enter first name"
             className={cn("", {
@@ -159,10 +164,11 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2 mb-2"> */}
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="lastname"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.lastname,
             })}
           >
@@ -170,6 +176,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("lastname")}
             placeholder="Please enter last name"
             className={cn("", {
@@ -187,10 +194,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
           <Label
             htmlFor="phone"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.phone,
             })}
           >
@@ -198,6 +205,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="number"
+            size="lg"
             placeholder="10 charecters phone number"
             {...register("phone")}
             className={cn("", {
@@ -209,10 +217,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
           <Label
             htmlFor="email"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.email,
             })}
           >
@@ -220,6 +228,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="email"
+            size="lg"
             {...register("email")}
             placeholder="enter valid email address"
             className={cn("", {
@@ -231,10 +240,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
           <Label
             htmlFor="gender"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.gender,
             })}
           >
@@ -248,10 +257,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2">
           <Label
             htmlFor="password"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.password,
             })}
           >
@@ -260,6 +269,7 @@ const onSubmit = async (data) => {
           <div className="relative">
             <Input
               type={showPassword ? 'text' : 'password'}
+              size="lg"
               placeholder="Please enter valid password"
               {...register("password")}
               className={cn("", {

@@ -162,18 +162,18 @@ const CheckboxWithAction = ({ onEdit }) => {
 
   return (
     <>
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
-          <TableHead>S. No.</TableHead>
+          <TableHead className="table-header serial-number">S. No.</TableHead>
           {/* <TableHead>id</TableHead> */}
-          <TableHead>School Name</TableHead>
-          <TableHead>UDISE</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Address</TableHead>
-          <TableHead>Created At</TableHead>
-          {canManageSchools && <TableHead>Action</TableHead>}
+          <TableHead className="table-header name">School Name</TableHead>
+          <TableHead className="table-header">UDISE</TableHead>
+          <TableHead className="table-header email">Email</TableHead>
+          <TableHead className="table-header phone">Phone</TableHead>
+          <TableHead className="table-header address">Address</TableHead>
+          <TableHead className="table-header">Created At</TableHead>
+          {canManageSchools && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -184,28 +184,28 @@ const CheckboxWithAction = ({ onEdit }) => {
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
+            <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
             {/* <TableCell>{item._id}</TableCell> */}
-            <TableCell className="font-medium text-card-foreground/80">
+            <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
                   {`${item.name}`}
                 </span>
               </div>
             </TableCell>
-            <TableCell className="font-medium text-card-foreground/80">
+            <TableCell className="table-cell font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
                   {item.udise}
                 </span>
               </div>
             </TableCell>
-            <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phone_no}</TableCell>
-            <TableCell>{`${item.district}`} {`${item.state}`}</TableCell>
-            <TableCell>{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
+            <TableCell className="table-cell email">{item.email}</TableCell>
+            <TableCell className="table-cell phone">{item.phone_no}</TableCell>
+            <TableCell className="table-cell address">{`${item.district}`} {`${item.state}`}</TableCell>
+            <TableCell className="table-cell">{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageSchools && (
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell table-cell flex justify-end">
               <div className="flex gap-3">
                 <TooltipProvider>
                   <Tooltip>

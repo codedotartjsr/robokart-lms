@@ -41,6 +41,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [timeTaken, setTimeTaken] = useState('');
     const [videoUrl, setVideoUrl] = useState(null);
     const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+    const [selectedChapterToPlay, setSelectedChapterToPlay] = useState(null);
 
     const [chaptersToShow, setChaptersToShow] = useState([]); // chapters to show per page
     const [currentPage, setCurrentPage] = useState(1);
@@ -221,6 +222,7 @@ const removeImage = (index) => {
     const handleVideoClick = (chapter) => {
       // Assuming 'videoUrl' is a property of 'chapter' object; adjust according to your actual data structure
       setVideoUrl(chapter.url); 
+      setSelectedChapterToPlay(chapter.title)
       setShowVideoPlayer(true);
   };  
 
@@ -229,26 +231,26 @@ const removeImage = (index) => {
 
   return (
     <>
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
-          <TableHead>S. No.</TableHead>
-          <TableHead>Chapter Title</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Created At</TableHead>
-          {canManageChapters && <TableHead>Action</TableHead>}
+          <TableHead className="table-header serial-number">S. No.</TableHead>
+          <TableHead className="table-header name">Chapter Title</TableHead>
+          <TableHead className="table-header description">Description</TableHead>
+          <TableHead className="table-header">Created At</TableHead>
+          {canManageChapters && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
       {chaptersToShow.length > 0 ? (
         chaptersToShow.map((chapter, index) => (
           <TableRow key={chapter._id}>
-            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-            <TableCell>{chapter.title}</TableCell>
-            <TableCell>{chapter.description}</TableCell>
-            <TableCell>{moment(chapter.createdAt).format('YYYY-MM-DD')}</TableCell>
+            <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
+            <TableCell className="table-cell name">{chapter.title}</TableCell>
+            <TableCell className="table-cell description">{chapter.description}</TableCell>
+            <TableCell className="table-cell">{moment(chapter.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageChapters && (
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell flex justify-end">
               <div className="flex gap-3">
                 <TooltipProvider>
                   <Tooltip>
@@ -445,7 +447,7 @@ const removeImage = (index) => {
   <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-animate">
       <div className="bg-white shadow-xl rounded-lg overflow-hidden video-container mx-2">
           <div className="p-4">
-              <h3 className="text-lg font-bold">Video Player</h3>
+              <h3 className="text-lg font-bold mb-2 ml-2">{selectedChapterToPlay}</h3>
               <video src={videoUrl} controls autoPlay className="responsive-video">
                   Sorry, your browser does not support embedded videos.
               </video>

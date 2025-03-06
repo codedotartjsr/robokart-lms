@@ -1,0 +1,58 @@
+  .responsive-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .table-header, .table-cell {
+    /* padding: 8px 16px; */
+    text-align: left;
+  }
+  
+  .table-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .serial-number {
+    min-width: 80px;
+    max-width: 100px;
+  }
+  
+  .email {
+    min-width: 150px;
+    max-width: 250px;
+  }
+
+  .name {
+    min-width: 150px;
+    max-width: 220px;
+  }
+
+  .phone {
+    min-width: 100px;
+    max-width: 130px;
+  }
+
+  .address {
+    min-width: 150px;
+    max-width: 250px;
+  }
+
+  .description {
+    min-width: 150px;
+    max-width: 350px;
+  }
+
+  .completed-at {
+    min-width: 130px;
+    max-width: 150px;
+  }
+  
+  @media (max-width: 768px) {
+    .table-header, .table-cell {
+      /* padding: 4px 8px; */
+      font-size: 0.875rem;
+    }
+  }
+  

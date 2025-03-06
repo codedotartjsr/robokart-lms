@@ -213,7 +213,7 @@ const ReportsSnapshot = () => {
   
   return (
     <Card>
-      <CardHeader className="border-none pb-0">
+      <CardHeader className="border-none pb-0 mb-0">
         <div className="flex items-center gap-2 flex-wrap ">
           <div className="flex-1">
             <div className="text-xl font-semibold text-default-900 whitespace-nowrap">

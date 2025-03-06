@@ -133,16 +133,16 @@ const CheckboxWithAction = ({ onEdit }) => {
 
   return (
     <>
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
-          <TableHead>S. No.</TableHead>
-          <TableHead>Admin Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Created At</TableHead>
-          {canManageAdmins && <TableHead>Action</TableHead>}
+          <TableHead className="table-header serial-number">S. No.</TableHead>
+          <TableHead className="table-header name">Admin Name</TableHead>
+          <TableHead className="table-header email">Email</TableHead>
+          <TableHead className="table-header phone">Phone</TableHead>
+          <TableHead className="table-header">Role</TableHead>
+          <TableHead className="table-header">Created At</TableHead>
+          {canManageAdmins && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -152,17 +152,17 @@ const CheckboxWithAction = ({ onEdit }) => {
             className="hover:bg-muted"
             data-state={selectedRows.includes(item._id) && "selected"}
           >
-            <TableCell>{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-            <TableCell className="font-medium text-card-foreground/80">
+            <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
+            <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
                   {`${item.firstName} ${item.lastName}`}
                 </span>
               </div>
             </TableCell>
-            <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phoneNumber}</TableCell>
-            <TableCell>
+            <TableCell className="table-cell email">{item.email}</TableCell>
+            <TableCell className="table-cell phone">{item.phoneNumber}</TableCell>
+            <TableCell className="table-cell">
               <Badge
                 variant="soft"
                 color="info"
@@ -171,9 +171,9 @@ const CheckboxWithAction = ({ onEdit }) => {
                 {item.role}
               </Badge>
             </TableCell>
-            <TableCell>{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
+            <TableCell className="table-cell">{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageAdmins && (
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell flex justify-end">
               <div className="flex gap-3">
               <TooltipProvider>
                 <Tooltip>
@@ -246,3 +246,4 @@ const CheckboxWithAction = ({ onEdit }) => {
 };
 
 export default CheckboxWithAction;
+

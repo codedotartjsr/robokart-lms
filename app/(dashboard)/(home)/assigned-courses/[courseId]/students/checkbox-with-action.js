@@ -271,7 +271,7 @@ const CheckboxWithAction = ({ course }) => {
   };
 
   return (
-    <Table>
+    <Table className="responsive-table">
       <TableHeader>
         <TableRow>
           {/* <TableHead>
@@ -305,11 +305,11 @@ const CheckboxWithAction = ({ course }) => {
               "Teacher Name"
             )}
           </TableHead> */}
-          <TableHead>S. No.</TableHead>
-          <TableHead>Student Name</TableHead>
-          <TableHead>Email</TableHead>
+          <TableHead className="table-header serial-number">S. No.</TableHead>
+          <TableHead className="table-header name">Student Name</TableHead>
+          <TableHead className="table-header email">Email</TableHead>
           {/* <TableHead>Status</TableHead> */}
-          <TableHead>Action</TableHead>
+          <TableHead className="table-header">Action</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -334,8 +334,8 @@ const CheckboxWithAction = ({ course }) => {
                 onCheckedChange={() => handleRowSelect(item.id)}
               />
             </TableCell> */}
-            <TableCell>{index+1}</TableCell>
-            <TableCell className="  font-medium  text-card-foreground/80">
+            <TableCell className="table-cell serial-number">{index+1}</TableCell>
+            <TableCell className="table-cell name font-medium  text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 {/* <Avatar className=" rounded-full">
                   <AvatarImage src={item.avatar} />
@@ -372,7 +372,7 @@ const CheckboxWithAction = ({ course }) => {
             </TableCell>
 
             {/* <TableCell>{item.title}</TableCell> */}
-            <TableCell>{student.email}</TableCell>
+            <TableCell className="table-cell email">{student.email}</TableCell>
             {/* <TableCell> */}
               {/* <Badge
                 variant="soft"
@@ -407,7 +407,7 @@ const CheckboxWithAction = ({ course }) => {
               </Badge>
             </TableCell> */}
 
-            <TableCell className="flex justify-end">
+            <TableCell className="table-cell flex justify-end">
               <div className="flex gap-3">
                 {/* <Button
                   size="icon"

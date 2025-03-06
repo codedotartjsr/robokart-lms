@@ -79,7 +79,7 @@ const AccordionPage = () => {
   // ];
 
   return (
-    <div className="grid grid-cols-1 gap-5">
+    <div className="grid grid-cols-1 gap-5 pt-4">
       <Card title="Your Assigned Courses">
         <p className="text-sm text-default-400 dark:text-default-600 mb-4">
         Below is a list of your assigned courses with details about each course and the students assigned to them.

@@ -77,23 +77,23 @@ const CheckboxWithAction = ({ showMedia }) => {
             {course.modules.map((module) => (
               <div key={module._id}>
                 <h4>{module.moduleId.title}</h4>
-                <Table>
+                <Table className="responsive-table">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>S. No.</TableHead>
-                      <TableHead>Chapter Title</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Completed At</TableHead>
+                      <TableHead className="table-header serial-number">S. No.</TableHead>
+                      <TableHead className="table-header name">Chapter Title</TableHead>
+                      <TableHead className="table-header description">Description</TableHead>
+                      <TableHead className="table-header completed-at">Completed At</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {module.chapters.length > 0 ? (
                       module.chapters.map((chapter, index) => (
                         <TableRow key={chapter._id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{chapter.chapterId.title}</TableCell>
-                          <TableCell>{chapter.chapterId.description}</TableCell>
-                          <TableCell>{course.updatedAt ? moment(course.updatedAt).format('YYYY-MM-DD') : 'Not Completed'}</TableCell>
+                          <TableCell className="table-cell serial-number">{index + 1}</TableCell>
+                          <TableCell className="table-cell name">{chapter.chapterId.title}</TableCell>
+                          <TableCell className="table-cell description">{chapter.chapterId.description}</TableCell>
+                          <TableCell className="table-cell completed-at">{course.updatedAt ? moment(course.updatedAt).format('YYYY-MM-DD') : 'Not Completed'}</TableCell>
                         </TableRow>
                       ))
                     ) : (

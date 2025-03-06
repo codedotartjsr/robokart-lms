@@ -37,7 +37,7 @@ const TailwindUiTable = () => {
   }
   
   return (
-    <div className=" space-y-6">
+    <div className=" space-y-6 pt-4">
 
       {/* <Card title="List of Students">
         <CheckboxWithAction />
