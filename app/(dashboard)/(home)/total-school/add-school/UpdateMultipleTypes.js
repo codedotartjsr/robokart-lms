@@ -91,11 +91,11 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="schoolname"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.schoolname,
             })}
           >
@@ -103,6 +103,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("schoolname")}
             placeholder="Please enter school name"
             className={cn("", {
@@ -120,10 +121,10 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="phone"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.phone,
             })}
           >
@@ -131,6 +132,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           </Label>
           <Input
             type="number"
+            size="lg"
             placeholder="10 charecters phone number"
             {...register("phone")}
             className={cn("", {
@@ -142,10 +144,10 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="email"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.email,
             })}
           >
@@ -153,6 +155,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           </Label>
           <Input
             type="email"
+            size="lg"
             {...register("email")}
             placeholder="enter valid email address"
             className={cn("", {
@@ -192,10 +195,10 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           )}
         </div> */}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="state"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.state,
             })}
           >
@@ -203,6 +206,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("state")}
             placeholder="Please enter your state"
             className={cn("", {
@@ -220,10 +224,10 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="district"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.district,
             })}
           >
@@ -231,6 +235,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("district")}
             placeholder="Please enter your district"
             className={cn("", {
@@ -248,10 +253,10 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="password"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.password,
             })}
           >
@@ -260,6 +265,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
           <div className="relative">
             <Input
               type={showPassword ? 'text' : 'password'}
+              size="lg"
               placeholder="Please enter valid password"
               {...register("password")}
               className={cn("", {
@@ -280,7 +286,7 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
         </div>
 
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mt-2 mb-2 ml-1">
         <Button type="submit">Submit</Button>
       </div>
     </form>

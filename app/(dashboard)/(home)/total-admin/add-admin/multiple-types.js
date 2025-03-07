@@ -130,12 +130,9 @@ const onSubmit = async (data) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4"> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 
-        {/* <div className="flex flex-col gap-2 mb-2"> */}
         <div className="flex flex-col gap-2 mb-2 lg:mr-4">
-
           <Label
             htmlFor="firstname"
             className={cn("mb-1 ml-1", {
@@ -165,7 +162,7 @@ const onSubmit = async (data) => {
         </div>
 
         {/* <div className="flex flex-col gap-2 mb-2"> */}
-        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="lastname"
             className={cn("mb-1 ml-1", {
@@ -194,7 +191,7 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="phone"
             className={cn("mb-1 ml-1", {
@@ -217,7 +214,7 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="email"
             className={cn("mb-1 ml-1", {
@@ -240,7 +237,7 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="gender"
             className={cn("mb-1 ml-1", {
@@ -257,7 +254,7 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="password"
             className={cn("mb-1 ml-1", {
@@ -290,7 +287,7 @@ const onSubmit = async (data) => {
         </div>
 
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mt-2 mb-2 ml-1">
         <Button type="submit">Submit</Button>
       </div>
     </form>

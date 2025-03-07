@@ -48,6 +48,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import avatar11 from "@/public/images/avatar/avatar-11.jpg";
 
 import { useRouter } from "next/navigation";
+import moment from 'moment';
 
 const ProjectHeader = ({ course }) => {
 
@@ -141,27 +142,28 @@ const ProjectHeader = ({ course }) => {
                 </div>
               ))} */}
               <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
-                <div className="text-sm font-medium text-default-500">Assigned Date</div>
+                {/* <div className="text-sm font-medium text-default-500">Assigned Date</div> */}
+                <div className="text-sm font-medium text-default-500">Created At</div>
                 {/* <div className="text-sm font-medium text-default-900">{course.assignedDate}</div> */}
-                <div className="text-sm font-medium text-default-900">15 feb 2025</div>
+                <div className="text-sm font-medium text-default-900">{moment(course.createdAt).format('YYYY-MM-DD')}</div>
               </div>
               {/* <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Due Date</div> */}
                 {/* <div className="text-sm font-medium text-default-900">{course.dueDate}</div> */}
                 {/* <div className="text-sm font-medium text-default-900">25 jun 2025</div>
               </div> */}
-              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
-                <div className="text-sm font-medium text-default-500">Total Hours</div>
+              {/* <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
+                <div className="text-sm font-medium text-default-500">Total Hours</div> */}
                 {/* <div className="text-sm font-medium text-default-900">{course.totalHours}</div> */}
-                <div className="text-sm font-medium text-default-900">40 Hours</div>
-              </div>
-              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer" onClick={() => handleModuleViewClick(course)}>
+                {/* <div className="text-sm font-medium text-default-900">40 Hours</div>
+              </div> */}
+              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer group" onClick={() => handleModuleViewClick(course)}>
                 <div className="text-sm font-medium text-default-500">Modules</div>
-                <div className="text-sm font-medium text-default-900">view</div>
+                <div className="text-sm font-medium text-default-900 group-hover:text-blue-500">click to view</div>
               </div>
-              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer" onClick={() => handleCourseCompletionClick(course)}>
+              <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px] cursor-pointer group" onClick={() => handleCourseCompletionClick(course)}>
                 <div className="text-sm font-medium text-default-500">Course Completion</div>
-                <div className="text-sm font-medium text-default-900">view</div>
+                <div className="text-sm font-medium text-default-900 group-hover:text-blue-500">click to view</div>
               </div>
               {/* <div className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]">
                 <div className="text-sm font-medium text-default-500">Total Students</div> */}
@@ -239,18 +241,14 @@ const ProjectHeader = ({ course }) => {
 
               {/* Clickable Avatar Group */}
               {/* {course.students.length > 0 && ( */}
-              {newCourses.students.length > 0 && (
+              {/* {newCourses.students.length > 0 && (
                 <div className="flex items-center justify-between cursor-pointer" onClick={handleViewStudents}>
-                  {/* <AvatarGroup max={3} total={course.students.length}> */}
                   <AvatarGroup max={3} total={newCourses.students.length}>
-                    {/* {course.students.map((student, index) => ( */}
                     {newCourses.students.map((student, index) => (
                       <Avatar
                         key={index}
                         className="ring-1 ring-background ring-offset-[2px] ring-offset-background"
                       >
-                        {/* <AvatarImage src={student.image.src} alt={student.name} /> */}
-                        {/* <AvatarFallback>{student.name.charAt(0)}</AvatarFallback> */}
                         <AvatarFallback>
                           {student.name
                             ? student.name
@@ -266,7 +264,7 @@ const ProjectHeader = ({ course }) => {
                   </AvatarGroup>
                   <span className="text-blue-500 text-sm font-medium hover:underline ml-3">View All</span>
                 </div>
-              )}
+              )} */}
 
             </div>
           </div>

@@ -21,7 +21,7 @@ const BasicSelect = ({ control, name }) => {
 
   return (
     <Select ref={ref} value={value} onValueChange={onChange}>
-      <SelectTrigger size="md">
+      <SelectTrigger size="lg">
         <SelectValue placeholder="Select Gender" />
       </SelectTrigger>
       <SelectContent>

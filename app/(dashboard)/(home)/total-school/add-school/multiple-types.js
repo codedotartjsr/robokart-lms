@@ -125,11 +125,11 @@ const onSubmit = async (data) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="schoolname"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.schoolname,
             })}
           >
@@ -137,6 +137,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("schoolname")}
             placeholder="Please enter school name"
             className={cn("", {
@@ -154,10 +155,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="phone"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.phone,
             })}
           >
@@ -165,6 +166,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="number"
+            size="lg"
             placeholder="10 charecters phone number"
             {...register("phone")}
             className={cn("", {
@@ -176,10 +178,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="email"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.email,
             })}
           >
@@ -187,6 +189,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="email"
+            size="lg"
             {...register("email")}
             placeholder="enter valid email address"
             className={cn("", {
@@ -226,10 +229,10 @@ const onSubmit = async (data) => {
           )}
         </div> */}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="state"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.state,
             })}
           >
@@ -237,6 +240,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("state")}
             placeholder="Please enter your state"
             className={cn("", {
@@ -254,10 +258,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="district"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.district,
             })}
           >
@@ -265,6 +269,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("district")}
             placeholder="Please enter your district"
             className={cn("", {
@@ -282,10 +287,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:ml-4">
           <Label
             htmlFor="udise"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.udise,
             })}
           >
@@ -293,6 +298,7 @@ const onSubmit = async (data) => {
           </Label>
           <Input
             type="text"
+            size="lg"
             {...register("udise")}
             placeholder="Please enter school name"
             className={cn("", {
@@ -310,10 +316,10 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-2 lg:mr-4">
           <Label
             htmlFor="password"
-            className={cn("", {
+            className={cn("mb-1 ml-1", {
               "text-destructive": errors.password,
             })}
           >
@@ -322,6 +328,7 @@ const onSubmit = async (data) => {
           <div className="relative">
             <Input
               type={showPassword ? 'text' : 'password'}
+              size="lg"
               placeholder="Please enter valid password"
               {...register("password")}
               className={cn("", {
@@ -342,7 +349,7 @@ const onSubmit = async (data) => {
         </div>
 
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mt-2 mb-2 ml-1">
         <Button type="submit">Submit</Button>
       </div>
     </form>

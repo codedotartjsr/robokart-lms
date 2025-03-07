@@ -147,7 +147,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
 
       // Check if the user is allowed to manage teachers
-    const canManageStudents = userRole === 'superadmin' || 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
+    const canManageStudents = userRole === 'superadmin' || userRole === 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
 
   return (
     <>
