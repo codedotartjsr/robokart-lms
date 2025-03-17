@@ -32,4 +32,5 @@ const BasicSelect = ({ control, name }) => {
     </Select>
   );
 };
+
 export default BasicSelect;

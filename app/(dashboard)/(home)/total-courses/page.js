@@ -7,13 +7,15 @@ import MultipleTypes from "./add-course/multiple-types";
 import UpdateMultipleTypes from "./add-course/UpdateMultipleTypes";
 import { Icon } from "@iconify/react";
 import AddCourseModal from "./add-course/AddCourseModal";
+import useRoleBasedRedirect from '@/hooks/useRoleBasedRedirect';
 
 const TailwindUiTable = () => {
+    useRoleBasedRedirect(['superadmin', 'admin', 'project']);
+
     const [showForm, setShowForm] = useState(false);
     const [editingCourse, setEditingCourse] = useState(null);
     const [userRole, setUserRole] = useState(null);
 
-    // Fetch user role from localStorage
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -27,19 +29,16 @@ const TailwindUiTable = () => {
       setEditingCourse(null);
     };
 
-    // Function to open the modal for adding
     const handleAddCourse = () => {
       setShowForm(true);
       setEditingCourse(null);
     };
 
-    // Function to open the modal for editing
     const handleEditCourse = (course) => {
       setShowForm(true);
       setEditingCourse(course);
     };
 
-    // Determine if the user is an admin or principal
     const canManageProjects = userRole === 'superadmin' || 'admin';
 
     return (

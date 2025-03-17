@@ -1,51 +1,9 @@
 "use client";
-// import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
-// import projectImage from "@/public/images/projects/project-1.png";
-// import {
-//   Avatar,
-//   AvatarFallback,
-//   AvatarGroup,
-//   AvatarImage,
-// } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import {
-//   Popover,
-//   PopoverClose,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
-// import { X } from "lucide-react";
-// import {
-//   Command,
-//   CommandEmpty,
-//   CommandGroup,
-//   CommandInput,
-//   CommandItem,
-// } from "@/components/ui/command";
-// import { faker } from "@faker-js/faker";
 
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import avatar1 from "@/public/images/avatar/avatar-7.jpg";
-// import avatar2 from "@/public/images/avatar/avatar-2.jpg";
-// import avatar3 from "@/public/images/avatar/avatar-3.jpg";
-// import avatar4 from "@/public/images/avatar/avatar-4.jpg";
-// import avatar5 from "@/public/images/avatar/avatar-5.jpg";
-// import avatar6 from "@/public/images/avatar/avatar-6.jpg";
-// import avatar7 from "@/public/images/avatar/avatar-7.jpg";
-// import avatar8 from "@/public/images/avatar/avatar-8.jpg";
-// import avatar9 from "@/public/images/avatar/avatar-9.jpg";
-// import avatar10 from "@/public/images/avatar/avatar-10.jpg";
-// import avatar11 from "@/public/images/avatar/avatar-11.jpg";
 const ProjectHeader = ({ assignment }) => {
   const data = [
     {
@@ -98,120 +56,16 @@ const ProjectHeader = ({ assignment }) => {
   return (
     <>
       <CardHeader className="flex-row items-center" style={{ marginTop:'-30px' }}>
-        {/* <CardTitle className="flex-1"> title </CardTitle>
-        <div className="flex-none flex items-center gap-3">
-          chat
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button size="icon" color="secondary">
-                <Icon
-                  icon="heroicons:chat-bubble-oval-left-20-solid"
-                  className="w-5 h-5 text-default-500"
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="p-0">
-              <div className="bg-default-100 pl-4 pr-1 py-1.5 flex items-center justify-between">
-                <span className="text-sm font-semibold text-default-900 uppercase ">
-                  Workspace Chat
-                </span>
-                <PopoverClose>
-                  <Button
-                    type="button"
-                    size="icon"
-                    className="bg-transparent hover:bg-default-200 rounded-full p-0 "
-                  >
-                    <X className="w-5 h-5 text-default-900" />
-                  </Button>
-                </PopoverClose>
-              </div>
-              <Command>
-                <div className="p-2">
-                  <CommandInput
-                    placeholder="Search By Name..."
-                    inputWrapper="border border-default-200 rounded-md"
-                    className="h-9"
-                  ></CommandInput>
-                </div>
-                <CommandEmpty>No new members.</CommandEmpty>
-                <CommandGroup>
-                  {users.map((item) => (
-                    <CommandItem
-                      key={`project-members-${item.value}`}
-                      value={item.name}
-                      className="gap-3"
-                    >
-                      <div className="relative inline-block">
-                        <Avatar>
-                          <AvatarImage src={item?.image?.src} />
-                          <AvatarFallback>SN</AvatarFallback>
-                        </Avatar>
-                        <Badge
-                          className=" h-2 w-2 ring-1 ring-default-100  p-0  items-center justify-center absolute left-[calc(100%-8px)] top-[calc(100%-10px)]"
-                          color={item.isUserActive ? "success" : "secondary"}
-                        ></Badge>
-                      </div>
-                      <div className="flex flex-col ">
-                        <span className="font-base capitalize text-default-900">
-                          {item.name}
-                        </span>
-                        <span className="truncate text-xs text-default-600">
-                          {" "}
-                          {item.lastMessage}
-                        </span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" color="secondary">
-                <Icon
-                  icon="heroicons:ellipsis-horizontal-20-solid"
-                  className="w-5 h-5 text-default-500"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[196px]" align="end">
-              <DropdownMenuItem>Create Invoice</DropdownMenuItem>
-              <DropdownMenuItem>Report</DropdownMenuItem>
-              <DropdownMenuItem>Share</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div> */}
       </CardHeader>
       <CardContent className="border-b border-default-200 p-2 pt-0" style={{ marginTop:'10px' }}>
         <div className="flex flex-col md:flex-row gap-4">
-          {/* <div className="flex-none">
-            <div className="h-[148px] w-[148px] rounded">
-              <Image
-                src={projectImage}
-                alt="dashtail"
-                className="w-full h-full object-cover rounded"
-              />
-            </div>
-          </div> */}
           <div className="flex-1">
             <div className="flex flex-wrap justify-between gap-4">
               <div className="text-sm font-medium text-default-950 truncate">
                 {" "}
-                {/* Dashtail - Admin Template */}
                 {assignment.title} - {assignment.course}
               </div>
               <div className="space-x-3 rtl:space-x-reverse ">
-                {/* <Badge color="warning" variant="soft">
-                  {" "}
-                  High{" "}
-                </Badge>
-                <Badge color="info" variant="soft">
-                  {" "}
-                  In Progress{" "}
-                </Badge> */}
                 <Badge
                   color={
                     assignment.priority === "High"
@@ -239,23 +93,17 @@ const ProjectHeader = ({ assignment }) => {
               </div>
             </div>
             <div className="text-sm text-default-600 w-full  mt-1">
-              {/* Create a Brand logo design for a DashTail Admin. Logo should be
-              match our dashboard theme. */}
               {assignment.description}
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-2 lg:gap-6 justify-between w-full">
             <div className="flex flex-wrap items-center gap-2 lg:gap-6">
-              {/* {data.map((item, index) => ( */}
                 <div
-                //   key={index}
                   className="border border-dashed border-default-300 rounded py-2.5 px-3 min-w-fit lg:min-w-[148px]"
                 >
                   <div className="text-sm font-medium text-default-500 capitalize">
-                    {/* {item.text} */}
                     Assigned Date
                   </div>
                   <div className="text-sm font-medium text-default-900">
-                    {/* {item.date} */}
                     {assignment.assignedDate}
                   </div>
                 </div>
@@ -277,48 +125,6 @@ const ProjectHeader = ({ assignment }) => {
                 </div>
               </div>
               </div>
-              {/* ))} */}
-              {/* {project?.assign?.length > 0 && (
-                <div>
-                  <AvatarGroup max={3} total={project.assign.length}>
-                    {project.assign?.map((user, index) => (
-                      <Avatar
-                        key={index}
-                        className=" ring-1 ring-background ring-offset-[2px]  ring-offset-background"
-                      >
-                        <AvatarImage src={user?.image?.src} />
-                        <AvatarFallback>AB</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </AvatarGroup>
-                </div>
-              )} */}
-              {/* {assignment.assignedTo.length > 0 && (
-                <div>
-                  <AvatarGroup max={3} total={assignment.assignedTo.length}>
-                    {assignment.assignedTo.map((student, index) => (
-                      <Avatar
-                        key={index}
-                        className="ring-1 ring-background ring-offset-[2px] ring-offset-background"
-                      >
-                        <AvatarImage src={student.image} />
-                        <AvatarFallback>{student.name[0]}</AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </AvatarGroup>
-                </div>
-              )} */}
-
-               {/* Icons Positioned on the Right */}
-              {/* <div className="flex space-x-3">
-                <Button size="icon" variant="ghost" onClick={() => console.log(`Downloading ${assignment.title}`)}>
-                  <Icon icon="mdi:download" className="w-5 h-5 text-default-600" />
-                </Button>
-
-                <Button size="icon" variant="ghost" onClick={() => console.log(`Uploading ${assignment.title}`)}>
-                  <Icon icon="mdi:upload" className="w-5 h-5 text-default-600" />
-                </Button>
-              </div> */}
 
                 <div className="flex space-x-3">
                     <Button 

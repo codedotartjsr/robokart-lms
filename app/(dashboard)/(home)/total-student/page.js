@@ -1,78 +1,3 @@
-// "use client"
-
-// import React, { useState } from "react";
-// import Card from "@/components/ui/card-snippet";
-// import CheckboxWithAction from "./checkbox-with-action";
-// import MultipleTypes from "./add-student/multiple-types";
-// import UpdateMultipleTypes from "./add-student/UpdateMultipleTypes";
-// import { Icon } from "@iconify/react";
-
-// const TailwindUiTable = () => {
-//     const [showForm, setShowForm] = useState(false);
-//     const [editingStudent, setEditingStudent] = useState(null);
-//     const [isEditing, setIsEditing] = useState(false);
-
-//     const handleAddStudent = () => {
-//       setIsEditing(false);
-//       setShowForm(true);
-//       setEditingStudent(null);
-//     };
-
-//     const handleEditStudent = (student) => {
-//       setIsEditing(true);
-//       setShowForm(true);
-//       setEditingStudent(student);
-//     };
-
-//     const handleCloseForm = () => {
-//       setShowForm(false);
-//       setEditingStudent(null);
-//       setIsEditing(false);
-//     };
-
-//     return (
-//       <div className="space-y-6">
-//         <Card title="List of Students">
-//           <div className="flex justify-between items-center">
-//             <h1 className="text-xl font-bold"></h1>
-//             {showForm ? (
-//               <button
-//                 className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2"
-//                 onClick={handleCloseForm}
-//               >
-//                 <Icon icon="heroicons-outline:x" className="h-5 w-5" />
-//                 Cancel
-//               </button>
-//             ) : (
-//               <button
-//                 className="px-4 py-2 bg-primary text-white rounded flex items-center gap-2"
-//                 onClick={handleAddStudent}
-//               >
-//                 <Icon icon="heroicons-outline:plus" className="h-5 w-5" />
-//                 Add Student
-//               </button>
-//             )}
-//           </div>
-//           {showForm ? (
-//             isEditing ? (
-//               <UpdateMultipleTypes initialData={editingStudent} onUpdated={handleCloseForm} />
-//             ) : (
-//               <MultipleTypes onAdded={handleCloseForm} />
-//             )
-//           ) : (
-//             <CheckboxWithAction onEdit={handleEditStudent} />
-//           )}
-//         </Card>
-//       </div>
-//     );
-// };
-
-// export default TailwindUiTable;
-
-
-
-
-
 "use client"
 
 import React, { useState, useEffect } from "react";
@@ -89,8 +14,8 @@ const TailwindUiTable = () => {
     const [editingStudent, setEditingStudent] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [cardTitle, setCardTitle] = useState("List of Students"); 
 
-    // Fetch user role from localStorage
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -103,17 +28,20 @@ const TailwindUiTable = () => {
       setIsEditing(false);
       setShowForm(true);
       setEditingStudent(null);
+      setCardTitle("Add New Student");
     };
 
     const handleUploadFiles = () => {
-        setShowFileUploader(true); // Show the file uploader
-        setShowForm(false); // Hide any forms if open
+        setShowFileUploader(true);
+        setShowForm(false);
+        setCardTitle("Upload Students File");
     };
 
     const handleEditStudent = (student) => {
       setIsEditing(true);
       setShowForm(true);
       setEditingStudent(student);
+      setCardTitle("Update Student Details");
     };
 
     const handleCloseForm = () => {
@@ -121,15 +49,14 @@ const TailwindUiTable = () => {
       setEditingStudent(null);
       setIsEditing(false);
       setShowFileUploader(false);
+      setCardTitle("List of Students");
     };
 
-    // Determine if the user is an admin or principal
     const canManageStudents = userRole === 'superadmin' || userRole === 'admin' || userRole === 'principal' || userRole === 'teacher' || userRole === 'school';
-
-
+    
     return (
       <div className="space-y-6 pt-4">
-        <Card title="List of Students">
+        <Card title={cardTitle}>
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold"></h1>
             {showForm || showFileUploader ? (

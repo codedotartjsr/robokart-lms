@@ -1,4 +1,3 @@
-// UpdateMultipleTypes.js
 "use client"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,46 +6,35 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
-import { Textarea } from "@/components/ui/textarea";
-import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
+import config from "@/config/config";
 
 const schema = z.object({
     name: z.string().min(1, "Required").max(30),
     department: z.string().min(1, "Required").max(30),
     phone: z.string().length(10, "Must be 10 digits"),
     email: z.string().email("Must be a valid email"),
-    // password: z.string().min(1, "Required"),
     description: z.string().min(1, "Required").max(30),
 });
 
 const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
-    // defaultValues: initialData
     defaultValues: {
       name: initialData.name,
       department: initialData.department,
       phone: initialData.phoneNumber,
       email: initialData.email,
       description: initialData.description
-      // password: initialData.password,
-      // school: initialData.school
     }
   });
 
   const [showPassword, setShowPassword] = useState(false);
-    
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  console.log("initialData", initialData);
-
   const onSubmit = async (data) => {
-    console.log("data", data);
-
     const payload = {
       name: data.name,
       department: data.department,
@@ -55,15 +43,12 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
       description: data.description
   };
 
-    // Only add password to the payload if it's been provided
     if (data.password && data.password.trim() !== "") {
         payload.password = data.password;
     }
-
-    console.log("Formatted data for API:", payload);
     
     try {
-      const response = await fetch(`https://xcxd.online:8080/api/v1/project/updateProject/${initialData._id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/v1/project/updateProject/${initialData._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

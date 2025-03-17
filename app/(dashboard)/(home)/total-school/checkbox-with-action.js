@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import ConfirmationModal from '../ConfirmationModal';
 import moment from 'moment';
@@ -22,6 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -31,8 +31,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [currentSchoolDetails, setCurrentSchoolDetails] = useState(null);
-    
-    const [schoolsToShow, setSchoolsToShow] = useState([]); // schools to show per page
+    const [schoolsToShow, setSchoolsToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
@@ -51,49 +50,24 @@ const CheckboxWithAction = ({ onEdit }) => {
       fetchDataBasedOnContext();
     }, []);
       
-    // const fetchSchools = async () => {
-    //   try {
-    //     // const response = await fetch("https://xcxd.online:8080/api/v1/school/schoolid", {
-    //     const response = await fetch("https://xcxd.online:8080/api/v1/school", {
-    //       // const response = await fetch("https://xcxd.online:8080/api/v1/project/getAllSchoolsOfProject/67bb0d7a33fe1a10ab28bc41", {
-    //       method: 'GET',
-    //       headers: {
-    //         'Accept': 'application/json',
-    //       }
-    //     });
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //       setSchools(data.data);
-    //     } else {
-    //       throw new Error(data.message || "Could not fetch schools");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching schools:", error);
-    //     toast.error(error.message || "An error occurred while fetching schools.");
-    //   }
-    // };
-
     const fetchDataBasedOnContext = async () => {
       const projectId = new URLSearchParams(window.location.search).get('projectId');
       let apiURL;
       if (projectId) {
-          apiURL = `https://xcxd.online:8080/api/v1/project/getAllSchoolsOfProject/${projectId}`;
+          apiURL = `${config.API_BASE_URL}/v1/project/getAllSchoolsOfProject/${projectId}`;
       } else {
-          apiURL = "https://xcxd.online:8080/api/v1/school";
+          apiURL = `${config.API_BASE_URL}/v1/school`;
       }
   
       try {
           const response = await fetch(apiURL, { method: 'GET' });
           const data = await response.json();
           if (response.ok) {
-              // Check if the data has a nested 'schools' structure
               if (data.data.schools) {
-                  // If the data comes from 'getAllSchoolsOfProject'
                   setSchools(data.data.schools);
                   setTotalPages(Math.ceil(data.data.schools.length / recordsPerPage));
-                  setPageData(1); // Make sure this is called after setting schools
+                  setPageData(1);
               } else {
-                  // If the data comes directly as an array of schools
                   setSchools(data.data);
                   setTotalPages(Math.ceil(data.data.length / recordsPerPage));
                   setPageData(1);
@@ -111,7 +85,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', schools.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', schools.slice(startIndex, endIndex));
       setSchoolsToShow(schools.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -120,7 +94,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (schools.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, schools]); // Adding schools dependency to refresh the slice when data changes 
+    }, [currentPage, schools]);
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -131,13 +105,13 @@ const CheckboxWithAction = ({ onEdit }) => {
     const handleDeleteSchool = async () => {
         if (selectedSchool) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/school/deleteSchool/${selectedSchool._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/school/deleteSchool/${selectedSchool._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("School deleted successfully");
-              fetchDataBasedOnContext(); // Refresh the list after deletion
+              fetchDataBasedOnContext();
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete School");
@@ -154,11 +128,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
-      // Check if the user is allowed to manage teachers
-    const canManageSchools = userRole === 'superadmin' || 'admin';
-
-    console.log("schools", schools);
-    
+    const canManageSchools = userRole === 'superadmin' || 'admin';    
 
   return (
     <>
@@ -166,7 +136,6 @@ const CheckboxWithAction = ({ onEdit }) => {
       <TableHeader>
         <TableRow>
           <TableHead className="table-header serial-number">S. No.</TableHead>
-          {/* <TableHead>id</TableHead> */}
           <TableHead className="table-header name">School Name</TableHead>
           <TableHead className="table-header">UDISE</TableHead>
           <TableHead className="table-header email">Email</TableHead>
@@ -185,7 +154,6 @@ const CheckboxWithAction = ({ onEdit }) => {
             data-state={selectedRows.includes(item._id) && "selected"}
           >
             <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-            {/* <TableCell>{item._id}</TableCell> */}
             <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
@@ -291,7 +259,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteSchool}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove School "${selectedSchool?.name}" from here?`}
     />
     </>
@@ -300,18 +267,14 @@ const CheckboxWithAction = ({ onEdit }) => {
 
 export default CheckboxWithAction;
 
-
 const DetailsModal = ({ school, onClose }) => {
   if (!school) return null;
-
-  console.log("school", school);  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-md mx-auto">
         <h3 className="text-lg font-bold mb-4">Total Details for {school.name}</h3>
         <ul className="list-none space-y-2">
-          {/* <li><a href={`/total-admin?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Admins</a></li> */}
           <li><a href={`/total-principal?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Principals</a></li>
           <li><a href={`/total-teacher?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Teachers</a></li>
           <li><a href={`/total-student?schoolId=${school._id}`} className="text-blue-500 hover:text-blue-700">- Click to view Students</a></li>

@@ -4,22 +4,21 @@ import toast from 'react-hot-toast';
 import moment from 'moment';
 import { Icon } from '@iconify/react';
 import '../course-modules/module-chapters/style.css';
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ showMedia }) => {
   const [userRole, setUserRole] = useState(null);
   const [courseCompletion, setCourseCompletion] = useState([]);
 
   useEffect(() => {
-    // Fetch user data from localStorage and parse it
     const userData = localStorage.getItem('user');
     let teacherId = null;
     if (userData) {
       const user = JSON.parse(userData);
       setUserRole(user.role);
-      teacherId = user._id;  // Correctly fetching teacherId from the user object
+      teacherId = user._id;
     }
 
-    // Retrieve courseId from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('courseId');
 
@@ -28,7 +27,7 @@ const CheckboxWithAction = ({ showMedia }) => {
       return;
     }
 
-    const apiUrl = `https://xcxd.online:8080/api/v1/courseCompletedTest/getCompletedCourseUrls/${teacherId}/${courseId}`;    
+    const apiUrl = `${config.API_BASE_URL}/v1/courseCompletedTest/getCompletedCourseUrls/${teacherId}/${courseId}`;    
 
     fetch(apiUrl)
       .then(response => response.json())
@@ -52,7 +51,6 @@ const CheckboxWithAction = ({ showMedia }) => {
       {courseCompletion.length > 0 ? (
         courseCompletion.map((course) => (
           <div key={course._id} className="mt-1 md:mt-0">
-            {/* <h3>{course.course.title} - {moment(course.createdAt).format('YYYY-MM-DD')}</h3> */}
             <h3 className="pt-1 sm:pt-0">{course.course.title}</h3>
             <h3 className="pt-1 sm:pt-0">Time Taken: {course.timeTaken} minutes</h3>
 

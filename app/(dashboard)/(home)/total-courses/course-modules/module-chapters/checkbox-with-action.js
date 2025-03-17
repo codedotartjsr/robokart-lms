@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import ConfirmationModal from '../../../ConfirmationModal';
 import moment from 'moment';
@@ -24,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,9 +32,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [chapters, setChapters] = useState([]);
     const [showFeedbackForm, setShowFeedbackForm] = useState(false);
     const [chaptersOptions, setChaptersOptions] = useState([]);
-
     const [selectedChapters, setSelectedChapters] = useState([]);
-
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [video, setVideo] = useState(null);
@@ -42,8 +40,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [videoUrl, setVideoUrl] = useState(null);
     const [showVideoPlayer, setShowVideoPlayer] = useState(false);
     const [selectedChapterToPlay, setSelectedChapterToPlay] = useState(null);
-
-    const [chaptersToShow, setChaptersToShow] = useState([]); // chapters to show per page
+    const [chaptersToShow, setChaptersToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
@@ -69,8 +66,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         const courseId = new URLSearchParams(window.location.search).get('courseId');
         const moduleId = new URLSearchParams(window.location.search).get('moduleId');
         if (courseId) {
-            // const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModules/${courseId}`;
-            const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModulesWithURLs/${courseId}`;
+            const apiURL = `${config.API_BASE_URL}/v1/course/getCoursesModulesWithURLs/${courseId}`;
             try {
                 const response = await fetch(apiURL, { method: 'GET' });
                 const data = await response.json();
@@ -79,7 +75,7 @@ const CheckboxWithAction = ({ onEdit }) => {
                   if (module) {
                       setChapters(module.chapters);
                       setTotalPages(Math.ceil(module.chapters.length / recordsPerPage));
-                      setPageData(1); // Make sure this is called after setting chapters
+                      setPageData(1);
                   } else {
                       toast.error("Module not found");
                   }
@@ -93,12 +89,10 @@ const CheckboxWithAction = ({ onEdit }) => {
         }
     };
 
-    console.log("chapters", chapters);    
-
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', chapters.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', chapters.slice(startIndex, endIndex));
       setChaptersToShow(chapters.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -107,7 +101,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (chapters.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, chapters]); // Adding chapters dependency to refresh the slice when data changes 
+    }, [currentPage, chapters]);
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -120,14 +114,13 @@ const CheckboxWithAction = ({ onEdit }) => {
         console.log("selectedChapter._id", selectedChapter._id);
         
         try {
-          const response = await fetch(`https://xcxd.online:8080/api/v1/course/deleteChapterTest/${selectedChapter._id}`, {
+          const response = await fetch(`${config.API_BASE_URL}/v1/course/deleteChapterTest/${selectedChapter._id}`, {
             method: 'DELETE',
           });
           const data = await response.json();
           if (response.ok) {
             toast.success("Chapter deleted successfully");
     
-            // Remove the deleted chapter from the list
             const updatedChapters = chapters.filter(chap => chap._id !== selectedChapter._id);
             setChapters(updatedChapters);
             setIsModalOpen(false);
@@ -147,9 +140,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       };
 
       const openTeacherFeedbackModal = (project) => {
-        // setSelectedCourse(project);
-        setShowFeedbackForm(true); // Ensure modal/overlay is visible
-        // fetchTeachers();
+        setShowFeedbackForm(true);
       };
 
   const handleImageChange = e => {
@@ -175,7 +166,6 @@ const removeImage = (index) => {
   setImages(newImages);
   setImagePreviews(newImagePreviews);
 
-  // Revoke the URL to free up memory
   URL.revokeObjectURL(imagePreviews[index]);
 };
 
@@ -203,7 +193,7 @@ const removeImage = (index) => {
         }));
 
         try {
-            const response = await fetch('https://xcxd.online:8080/api/v1/courseCompletedTest/updatedCompleteMedia', {
+            const response = await fetch(`${config.API_BASE_URL}/v1/courseCompletedTest/updatedCompleteMedia`, {
                 method: 'POST',
                 body: formData
             });
@@ -220,13 +210,11 @@ const removeImage = (index) => {
     };
 
     const handleVideoClick = (chapter) => {
-      // Assuming 'videoUrl' is a property of 'chapter' object; adjust according to your actual data structure
       setVideoUrl(chapter.url); 
       setSelectedChapterToPlay(chapter.title)
       setShowVideoPlayer(true);
   };  
 
-      // Check if the user is allowed to manage teachers
     const canManageChapters = userRole === 'superadmin' || 'admin';    
 
   return (
@@ -392,57 +380,6 @@ const removeImage = (index) => {
             </div>
         )}
 
-        {/* {showVideoPlayer && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-              <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-                  <div className="p-4">
-                      <h3 className="text-lg font-bold">Video Player</h3>
-                      <video src={videoUrl} controls autoPlay className="w-full h-auto">
-                          Sorry, your browser does not support embedded videos.
-                      </video>
-                  </div>
-                  <div className="flex justify-end p-2">
-                      <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-                          onClick={() => setShowVideoPlayer(false)}>Close</button>
-                  </div>
-              </div>
-          </div>
-        )} */}
-
-        {/* {showVideoPlayer && (
-  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white shadow-xl rounded-lg overflow-hidden max-w-full mx-2">
-          <div className="p-4">
-              <h3 className="text-lg font-bold">Video Player</h3>
-              <video src={videoUrl} controls autoPlay className="responsive-video">
-                  Sorry, your browser does not support embedded videos.
-              </video>
-          </div>
-          <div className="flex justify-end p-2">
-              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-                  onClick={() => setShowVideoPlayer(false)}>Close</button>
-          </div>
-      </div>
-  </div>
-)} */}
-
-{/* {showVideoPlayer && (
-  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white shadow-xl rounded-lg overflow-hidden video-container mx-2">
-          <div className="p-4">
-              <h3 className="text-lg font-bold">Video Player</h3>
-              <video src={videoUrl} controls autoPlay className="responsive-video">
-                  Sorry, your browser does not support embedded videos.
-              </video>
-          </div>
-          <div className="flex justify-end p-2">
-              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-                  onClick={() => setShowVideoPlayer(false)}>Close</button>
-          </div>
-      </div>
-  </div>
-)} */}
-
 {showVideoPlayer && (
   <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 modal-animate">
       <div className="bg-white shadow-xl rounded-lg overflow-hidden video-container mx-2">
@@ -460,13 +397,10 @@ const removeImage = (index) => {
   </div>
 )}
 
-
-
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteChapter}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove chapter "${selectedChapter?.title}" from the module?`}
     />
     </>

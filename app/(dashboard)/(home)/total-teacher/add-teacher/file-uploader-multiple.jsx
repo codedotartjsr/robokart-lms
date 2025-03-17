@@ -1,21 +1,15 @@
 " use client";
 import { Fragment, useState } from "react";
 import { Icon } from "@iconify/react";
-
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Upload } from "lucide-react";
 import toast from 'react-hot-toast';
+import config from "@/config/config";
 
 const FileUploaderMultiple = ({ onAdded }) => {
   const [files, setFiles] = useState([]);
-
-//   const { getRootProps, getInputProps } = useDropzone({
-//     onDrop: (acceptedFiles) => {
-//       setFiles(acceptedFiles.map((file) => Object.assign(file)));
-//     },
-//   });
 
 const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -23,19 +17,19 @@ const { getRootProps, getInputProps } = useDropzone({
         preview: URL.createObjectURL(file)
       })));
     },
-    accept: '.xlsx',  // Ensure only Excel files are accepted
-    multiple: false   // Ensure only one file can be uploaded
+    accept: '.xlsx',
+    multiple: false
   });
 
   // Upload file to the server
   const uploadFile = async (file) => {
     const formData = new FormData();
-    formData.append('file', file);  // Append the file under the key 'file'
+    formData.append('file', file);
 
     try {
-      const response = await fetch('https://xcxd.online:8080/api/v1/teacher/upload', {
+      const response = await fetch(`${config.API_BASE_URL}/v1/teacher/upload`, {
         method: 'POST',
-        body: formData,  // Send formData
+        body: formData,
       });
       const result = await response.json();
       if (response.ok) {
@@ -54,7 +48,7 @@ const { getRootProps, getInputProps } = useDropzone({
 
   const handleUploadClick = () => {
     if (files.length > 0) {
-      uploadFile(files[0]);  // Upload the first (and only) file
+      uploadFile(files[0]);
     }
   };
 

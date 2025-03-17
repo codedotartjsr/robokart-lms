@@ -38,11 +38,6 @@ const TailwindUiTable = () => {
   
   return (
     <div className=" space-y-6 pt-4">
-
-      {/* <Card title="List of Students">
-        <CheckboxWithAction />
-      </Card> */}
-
       <Card
         title={
           <div className="flex items-center justify-between">
@@ -56,24 +51,6 @@ const TailwindUiTable = () => {
         <h4 className="text-sm font-semibold text-gray-600 mb-4 -mt-2">{course.title}</h4>
         <CheckboxWithAction course={course} />
       </Card>
-
-        {/* <Card
-            title={
-                <div className="flex items-center justify-between">
-                    <div>
-                        <span className="block text-lg font-medium">List of Students</span>
-                        <h4 className="text-sm font-semibold text-gray-600 pb-1 border-b-2 border-dotted border-gray-400">
-                            {course.title}
-                        </h4>
-                    </div>
-                    <Link href="/assigned-courses" className="text-blue-500 text-sm hover:underline">
-                        &larr; Back to Courses
-                    </Link>
-                </div>
-            }
-        >
-        <CheckboxWithAction course={course} />
-        </Card> */}
     </div>
   );
 };

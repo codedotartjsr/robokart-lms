@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 // import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
-import { Textarea } from "@/components/ui/textarea";
 import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
+import config from "@/config/config";
 
 const schema = z.object({
     firstName: z.string().min(1),
@@ -63,11 +63,9 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
     if (data.password && data.password.trim() !== "") {
         payload.password = data.password;
     }
-
-    console.log("Formatted data for API:", payload);
     
     try {
-      const response = await fetch(`https://xcxd.online:8080/api/v1/principal/updatePrincipal/${initialData._id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/v1/principal/updatePrincipal/${initialData._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

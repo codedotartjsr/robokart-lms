@@ -6,9 +6,9 @@ import { useThemeStore } from "@/store";
 import { useTheme } from "next-themes";
 import { themes } from "@/config/thems";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-// import DashboardSelect from "@/components/dasboard-select";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import configAPI from "@/config/config";
 
 const allUsersSeries = [
   {
@@ -53,44 +53,17 @@ const ReportsSnapshot = () => {
     });
 
     const [activeTab, setActiveTab] = useState("students");
-  const [chartData, setChartData] = useState({});
-
-  // const tabsTrigger = [
-  //   {
-  //     value: "all",
-  //     text: "all user",
-  //     total: "10,234",
-  //     color: "primary",
-  //   },
-  //   {
-  //     value: "event",
-  //     text: "Event Count",
-  //     total: "536",
-  //     color: "warning",
-  //   },
-  //   {
-  //     value: "conversation",
-  //     text: "conversations",
-  //     total: "21",
-  //     color: "success",
-  //   },
-  //   {
-  //     value: "newuser",
-  //     text: "New User",
-  //     total: "3321",
-  //     color: "info",
-  //   },
-  // ];
+    const [chartData, setChartData] = useState({});
 
   useEffect(() => {
     const fetchCounts = async () => {
       const urls = [
-        "https://xcxd.online:8080/api/v1/student/getStudents",
-        "https://xcxd.online:8080/api/v1/school",
-        "https://xcxd.online:8080/api/v1/admin/getAllAdmin",
-        "https://xcxd.online:8080/api/v1/project/getAllProject",
-        "https://xcxd.online:8080/api/v1/course/getAllCourse",
-        "https://xcxd.online:8080/api/v1/teacher/getAllTeacher"
+        `${configAPI.API_BASE_URL}/v1/student/getStudents`,
+        `${configAPI.API_BASE_URL}/v1/school`,
+        `${configAPI.API_BASE_URL}/v1/admin/getAllAdmin`,
+        `${configAPI.API_BASE_URL}/v1/project/getAllProject`,
+        `${configAPI.API_BASE_URL}/v1/course/getAllCourse`,
+        `${configAPI.API_BASE_URL}/v1/teacher/getAllTeacher`
       ];
       const requests = urls.map(url => fetch(url).then(res => res.json()));
 
@@ -112,10 +85,6 @@ const ReportsSnapshot = () => {
     fetchCounts();
   }, []);
 
-  console.log("counts", counts);
-  
-
-    // Function to fetch and process data
     const fetchData = async (url, category) => {
       try {
         const response = await fetch(url);
@@ -127,7 +96,6 @@ const ReportsSnapshot = () => {
       }
     };
 
-    // Process chart data
   const processChartData = (data) => {
     const enrollmentCounts = data.reduce((acc, item) => {
       const date = new Date(item.createdAt).toLocaleDateString();
@@ -140,21 +108,21 @@ const ReportsSnapshot = () => {
   };
 
   useEffect(() => {
-    fetchData("https://xcxd.online:8080/api/v1/student/getStudents", "students");
-    fetchData("https://xcxd.online:8080/api/v1/teacher/getAllTeacher", "teachers");
-    fetchData("https://xcxd.online:8080/api/v1/school", "schools");
-    fetchData("https://xcxd.online:8080/api/v1/admin/getAllAdmin", "admins");
-    fetchData("https://xcxd.online:8080/api/v1/project/getAllProject", "projects");
-    // fetchData("https://xcxd.online:8080/api/v1/course/getAllCourse", "courses");
+    fetchData(`${configAPI.API_BASE_URL}/v1/student/getStudents`, "students");
+    fetchData(`${configAPI.API_BASE_URL}/v1/teacher/getAllTeacher`, "teachers");
+    fetchData(`${configAPI.API_BASE_URL}/v1/school`, "schools");
+    fetchData(`${configAPI.API_BASE_URL}/v1/admin/getAllAdmin`, "admins");
+    fetchData(`${configAPI.API_BASE_URL}/v1/project/getAllProject`, "projects");
+    // fetchData(`${configAPI.API_BASE_URL}/v1/course/getAllCourse`, "courses");
   }, []);
 
   const tabsConfig = [
-    { key: "students", title: "Total Students", url: "https://xcxd.online:8080/api/v1/student/getStudents", color: "success", },
-    { key: "teachers", title: "Total Teachers", url: "https://xcxd.online:8080/api/v1/teacher/getAllTeacher", color: "warning", },
-    { key: "schools", title: "Total Schools", url: "https://xcxd.online:8080/api/v1/school", color: "primary", },
-    { key: "admins", title: "Total Admins", url: "https://xcxd.online:8080/api/v1/admin/getAllAdmin", color: "info", },
-    { key: "projects", title: "Total Projects", url: "https://xcxd.online:8080/api/v1/project/getAllProject", color: "info", },
-    // { key: "courses", title: "Total Courses", url: "https://xcxd.online:8080/api/v1/course/getAllCourse", color: "info", },
+    { key: "students", title: "Total Students", url: `${configAPI.API_BASE_URL}/v1/student/getStudents`, color: "success", },
+    { key: "teachers", title: "Total Teachers", url: `${configAPI.API_BASE_URL}/v1/teacher/getAllTeacher`, color: "warning", },
+    { key: "schools", title: "Total Schools", url: `${configAPI.API_BASE_URL}/v1/school", color: "primary`, },
+    { key: "admins", title: "Total Admins", url: `${configAPI.API_BASE_URL}/v1/admin/getAllAdmin`, color: "info", },
+    { key: "projects", title: "Total Projects", url: `${configAPI.API_BASE_URL}/v1/project/getAllProject`, color: "info", },
+    // { key: "courses", title: "Total Courses", url: `${configAPI.API_BASE_URL}/v1/course/getAllCourse`, color: "info", },
   ];
   
   const tabsTrigger = [
@@ -209,8 +177,6 @@ const ReportsSnapshot = () => {
     },
   ];
 
-  console.log("tabsContentData", tabsContentData);  
-  
   return (
     <Card>
       <CardHeader className="border-none pb-0 mb-0">
@@ -220,13 +186,9 @@ const ReportsSnapshot = () => {
               Reports Snapshot
             </div>
             <span className="text-xs text-default-600">
-              {/* Demographic properties of your customer */}
               Overview of schools, teachers, and students in your system
             </span>
           </div>
-          {/* <div className="flex-none">
-            <DashboardSelect />
-          </div> */}
         </div>
       </CardHeader>
       <CardContent className="p-1 md:p-5">
@@ -267,12 +229,6 @@ const ReportsSnapshot = () => {
               </TabsTrigger>
             ))}
           </TabsList>
-          {/* charts data */}
-          {/* {tabsContentData.map((item, index) => (
-            <TabsContent key={`report-tab-${index}`} value={item.value}>
-              <ReportsChart series={item.series} chartColor={item.color} />
-            </TabsContent>
-          ))} */}
           {tabsConfig.map(tab => (
             <TabsContent key={tab.key} value={tab.key}>
               <ReportsChart series={chartData[tab.key] || []} chartColor={theme.cssVars[mode][tab.color]} />

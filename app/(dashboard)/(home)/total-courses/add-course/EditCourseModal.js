@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import config from "@/config/config";
 
 const EditCourseModal = ({ course, onClose, onSave }) => {
     const [title, setTitle] = useState(course.title);
@@ -8,7 +9,7 @@ const EditCourseModal = ({ course, onClose, onSave }) => {
 
     const handleUpdateCourse = async () => {
         try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/course/updateCourse/${course._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/course/updateCourse/${course._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -32,13 +33,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const router = useRouter();
-
     const [schools, setSchools] = useState([]);
     const [showSchoolAssign, setShowSchoolAssign] = useState(false);
     const [selectedSchool, setSelectedSchool] = useState(null);
     const [showSchoolsModal, setShowSchoolsModal] = useState(false);
-
-    const [projectsToShow, setProjectsToShow] = useState([]); // Projects to show per page
+    const [projectsToShow, setProjectsToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
@@ -54,14 +53,14 @@ const CheckboxWithAction = ({ onEdit }) => {
 
     const openSchoolAssignModal = (project) => {
       setSelectedProject(project);
-      setShowSchoolAssign(true); // Ensure modal/overlay is visible
+      setShowSchoolAssign(true);
       fetchSchools();
     };
     
     const handleAssignSchool = async () => {
       if (selectedProject && selectedSchool) {
         try {
-          const response = await fetch('https://xcxd.online:8080/api/v1/project/addProjectToSchool', {
+          const response = await fetch(`${config.API_BASE_URL}/v1/project/addProjectToSchool`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
@@ -74,8 +73,8 @@ const CheckboxWithAction = ({ onEdit }) => {
           const data = await response.json();
           if (response.ok) {
             toast.success("Project assigned to school successfully!");
-            setShowSchoolAssign(false); // Close the modal
-            fetchProjects(); // Optionally refresh projects
+            setShowSchoolAssign(false);
+            fetchProjects();
           } else {
             throw new Error(data.message || "Failed to assign project to school");
           }
@@ -88,7 +87,7 @@ const CheckboxWithAction = ({ onEdit }) => {
 
     const fetchSchools = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/school/");
+        const response = await fetch(`${config.API_BASE_URL}/v1/school/`);
         const data = await response.json();
         if (response.ok) {
           setSchools(data.data.map(school => ({ value: school._id, label: school.name })));
@@ -103,7 +102,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
     const fetchProjects = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/project/getAllProject", {
+        const response = await fetch(`${config.API_BASE_URL}/v1/project/getAllProject`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -113,7 +112,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         if (response.ok) {
           setProjects(data.data);
           setTotalPages(Math.ceil(data.data.length / recordsPerPage));
-          setPageData(1); // Make sure this is called after setting projects
+          setPageData(1);
         } else {
           throw new Error(data.message || "Could not fetch projects");
         }
@@ -126,7 +125,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', projects.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', projects.slice(startIndex, endIndex));
       setProjectsToShow(projects.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -135,7 +134,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (projects.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, projects]); // Adding projects dependency to refresh the slice when data changes 
+    }, [currentPage, projects]); 
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -145,15 +144,14 @@ const CheckboxWithAction = ({ onEdit }) => {
 
     const handleDeleteProject = async () => {
         if (selectedProject) {
-          console.log("api", `https://xcxd.online:8080/api/v1/project/deleteProject/${selectedProject._id}`); 
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/project/deleteProject/${selectedProject._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/project/deleteProject/${selectedProject._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("Project deleted successfully");
-              fetchProjects(); // Refresh the list after deletion
+              fetchProjects();
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete project");
@@ -172,17 +170,15 @@ const CheckboxWithAction = ({ onEdit }) => {
 
       const handleRowClick = (project) => {
         localStorage.setItem('selectedProject', JSON.stringify(project));
-        // router.push('/total-school'); // Navigate to the /total-school page
         router.push(`/total-school?projectId=${project._id}`);
       };  
 
       const fetchSchoolsForProject = async (projectId) => {
         try {
-            // First find the project details from your projects state
             const project = projects.find(p => p._id === projectId);
-            setSelectedProject(project);  // Set the selected project here
+            setSelectedProject(project);
     
-            const response = await fetch(`https://xcxd.online:8080/api/v1/project/getAllSchoolsOfProject/${projectId}`);
+            const response = await fetch(`${config.API_BASE_URL}/v1/project/getAllSchoolsOfProject/${projectId}`);
             const data = await response.json();
             if (response.ok) {
                 setSchools(data.data.schools);
@@ -200,7 +196,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
       const removeSchoolFromProject = async (projectId, schoolId) => {
         try {
-          const response = await fetch('https://xcxd.online:8080/api/v1/project/removeProjectFromSchool', {
+          const response = await fetch(`${config.API_BASE_URL}/v1/project/removeProjectFromSchool`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ projectId, schoolId })
@@ -208,7 +204,7 @@ const CheckboxWithAction = ({ onEdit }) => {
           const data = await response.json();
           if (response.ok) {
             toast.success("School removed from the project successfully!");
-            fetchSchoolsForProject(projectId); // Refresh the list
+            fetchSchoolsForProject(projectId);
           } else {
             throw new Error(data.message || "Failed to remove school from the project");
           }
@@ -218,7 +214,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         }
       };
 
-      // Check if the user is allowed to manage teachers
     const canManageProjects = userRole === 'superadmin' || 'admin';
 
   return (
@@ -227,12 +222,10 @@ const CheckboxWithAction = ({ onEdit }) => {
       <TableHeader>
         <TableRow>
           <TableHead className="table-header serial-number">S. No.</TableHead>
-          {/* <TableHead>id</TableHead> */}
           <TableHead className="table-header name">Project Name</TableHead>
           <TableHead className="table-header email">Email</TableHead>
           <TableHead className="table-header phone">Phone</TableHead>
           <TableHead className="table-header name">Department</TableHead>
-          {/* <TableHead>Description</TableHead> */}
           <TableHead className="table-header">Created At</TableHead>
           {canManageProjects && <TableHead className="table-header">Action</TableHead>}
         </TableRow>
@@ -245,7 +238,6 @@ const CheckboxWithAction = ({ onEdit }) => {
             data-state={selectedRows.includes(item._id) && "selected"}
           >
             <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-            {/* <TableCell>{item._id}</TableCell> */}
             <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
@@ -258,9 +250,6 @@ const CheckboxWithAction = ({ onEdit }) => {
             <TableCell className="table-cell name">
                 {item.department}
             </TableCell>
-            {/* <TableCell>
-                {item.description}
-            </TableCell> */}
             <TableCell className="table-cell">{moment(item.createdAt).format('YYYY-MM-DD')}</TableCell>
             {canManageProjects && (
             <TableCell className="table-cell flex justify-end">
@@ -400,9 +389,6 @@ const CheckboxWithAction = ({ onEdit }) => {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
           <h3 className="text-lg font-bold mb-4">Manage Schools for Project</h3>
-          {/* <div className="mb-2 text-center text-md">
-            Project: <strong>{selectedProject?.name}</strong>
-          </div> */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Project Name:</label>
             <div className="p-2 bg-gray-100 rounded border">
@@ -439,7 +425,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteProject}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove Project "${selectedProject?.name}" from this school?`}
     />
     </>

@@ -18,38 +18,7 @@ const AuthWrapper = ({ children }) => {
       if (pathname !== "/") {
         router.replace("/");
       }
-    } 
-    // else {
-    //   try {
-    //     const decodedToken = jwtDecode(token);
-
-    //     const currentTime = Math.floor(Date.now() / 1000);
-
-    //     // console.log("decodedToken.exp", decodedToken.exp);
-    //     // console.log("currentTime", currentTime);    
-        
-    //     const expDate = new Date(decodedToken.exp * 1000);
-    //     const currentDate = new Date(currentTime * 1000);
-
-    //     // console.log("Expiration Date:", expDate.toString());
-    //     // console.log("Current Date:", currentDate.toString());
-
-    //     if (decodedToken.exp < currentTime) {
-    //       console.warn("Token has expired");
-    //       localStorage.clear();
-    //       setShowModal(true);
-    //     } else {
-    //       if (pathname === "/") {
-    //         router.push("/dashboard");
-    //       }
-    //       setCheckingAuth(false);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error decoding token", error);
-    //     localStorage.clear();
-    //     setShowModal(true);
-    //   }
-    // }
+    }
 
     setCheckingAuth(false);
   }, [router, pathname]);

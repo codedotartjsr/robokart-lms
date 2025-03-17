@@ -6,14 +6,17 @@ import CheckboxWithAction from "./checkbox-with-action";
 import MultipleTypes from "./add-admin/multiple-types";
 import UpdateMultipleTypes from "./add-admin/UpdateMultipleTypes";
 import { Icon } from "@iconify/react";
+import useRoleBasedRedirect from '@/hooks/useRoleBasedRedirect';
 
 const TailwindUiTable = () => {
+    useRoleBasedRedirect(['superadmin', 'admin', 'project']);
+
     const [showForm, setShowForm] = useState(false);
     const [editingAdmin, setEditingAdmin] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [cardTitle, setCardTitle] = useState("List of Admins");
 
-    // Fetch user role from localStorage
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -26,26 +29,28 @@ const TailwindUiTable = () => {
       setIsEditing(false);
       setShowForm(true);
       setEditingAdmin(null);
+      setCardTitle("Add New Admin"); 
     };
 
     const handleEditAdmin = (admin) => {
       setIsEditing(true);
       setShowForm(true);
       setEditingAdmin(admin);
+      setCardTitle("Update Admin Details"); 
     };
 
     const handleCloseForm = () => {
       setShowForm(false);
       setEditingAdmin(null);
       setIsEditing(false);
+      setCardTitle("List of Admins"); 
     };
 
-    // Determine if the user is an admin or principal
-    const canManageAdmins = userRole === 'superadmin';
+    const canManageAdmins = userRole === 'superadmin' || userRole === 'admin';
 
     return (
       <div className="space-y-6 pt-4">
-        <Card title="List of Admins">
+        <Card title={cardTitle}>
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold"></h1>
             {showForm ? (

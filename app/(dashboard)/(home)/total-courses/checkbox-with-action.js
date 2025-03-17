@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -32,13 +33,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const router = useRouter();
-
     const [teachers, setTeachers] = useState([]);
     const [showSchoolAssign, setShowSchoolAssign] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [showSchoolsModal, setShowSchoolsModal] = useState(false);
-
-    const [coursesToShow, setCoursesToShow] = useState([]); // courses to show per page
+    const [coursesToShow, setCoursesToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
@@ -54,29 +53,27 @@ const CheckboxWithAction = ({ onEdit }) => {
 
     const openSchoolAssignModal = (project) => {
       setSelectedCourse(project);
-      setShowSchoolAssign(true); // Ensure modal/overlay is visible
+      setShowSchoolAssign(true);
       fetchTeachers();
     };
 
     const handleAssignTeacher = async () => {
-      if (selectedCourse && selectedTeacher) {
-        console.log("selectedTeacher", selectedTeacher);
-        
+      if (selectedCourse && selectedTeacher) {        
         try {
-          const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/updateTeacher/${selectedTeacher.value}`, {
+          const response = await fetch(`${config.API_BASE_URL}/v1/teacher/updateTeacher/${selectedTeacher.value}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              courses: [selectedCourse._id] // Passing only the selected course's ID
+              courses: [selectedCourse._id] 
             })
           });
           const data = await response.json();
           if (response.ok) {
             toast.success("Course assigned to teacher successfully!");
-            setShowSchoolAssign(false); // Close the modal
-            fetchCourses(); // Optionally refresh courses
+            setShowSchoolAssign(false);
+            fetchCourses();
           } else {
             throw new Error(data.message || "Failed to assign course to teacher");
           }
@@ -89,7 +86,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     
     const fetchTeachers = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/teacher/getAllTeacher");
+        const response = await fetch(`${config.API_BASE_URL}/v1/teacher/getAllTeacher`);
         const data = await response.json();
         if (response.ok) {
           setTeachers(data.data.map(school => ({ value: school._id, label: school.name })));
@@ -104,7 +101,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
     const fetchCourses = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/course/getAllCourse", {
+        const response = await fetch(`${config.API_BASE_URL}/v1/course/getAllCourse`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -114,7 +111,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         if (response.ok) {
           setCourses(data.data);
           setTotalPages(Math.ceil(data.data.length / recordsPerPage));
-          setPageData(1); // Make sure this is called after setting courses
+          setPageData(1);
         } else {
           throw new Error(data.message || "Could not fetch courses");
         }
@@ -127,7 +124,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', courses.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', courses.slice(startIndex, endIndex));
       setCoursesToShow(courses.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -136,7 +133,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (courses.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, courses]); // Adding courses dependency to refresh the slice when data changes 
+    }, [currentPage, courses]);
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -147,13 +144,13 @@ const CheckboxWithAction = ({ onEdit }) => {
     const handleDeleteProject = async () => {
         if (selectedCourse) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/course/deleteCourse/${selectedCourse._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/course/deleteCourse/${selectedCourse._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("Course deleted successfully");
-              fetchCourses(); // Refresh the list after deletion
+              fetchCourses();
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete course");
@@ -170,44 +167,19 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
-    //   const fetchSchoolsForProject = async (projectId) => {
-    //     console.log("projectId", projectId);
-        
-    //     try {
-    //         // First find the project details from your courses state
-    //         const project = courses.find(p => p._id === projectId);
-    //         setSelectedCourse(project);  // Set the selected project here
-    
-    //         const response = await fetch(`https://xcxd.online:8080/api/v1/course/allTeachersOfCourses/${projectId}`);
-    //         const data = await response.json();
-    //         if (response.ok) {
-    //             setTeachers(data.data.schools);
-    //             setShowSchoolsModal(true);
-    //             console.log("data.data.schools", data.data.schools);
-                
-    //         } else {
-    //             throw new Error(data.message || "Failed to fetch schools for the project");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching schools for the project:", error);
-    //         toast.error(error.message || "An error occurred while fetching schools for the project.");
-    //     }
-    // };
-
       const fetchTeachersForCourse = async (courseId) => {
         try {
             const course = courses.find(p => p._id === courseId);
             setSelectedCourse(course); 
-            const response = await fetch(`https://xcxd.online:8080/api/v1/course/allTeachersOfCourses/${courseId}`);
+            const response = await fetch(`${config.API_BASE_URL}/v1/course/allTeachersOfCourses/${courseId}`);
             const data = await response.json();
             if (response.ok && data.success) {
-                setTeachers(data.data); // Assuming the data returned is an array of teachers
-                setShowSchoolsModal(true); // Show the modal after fetching data
+                setTeachers(data.data); 
+                setShowSchoolsModal(true);
             } else {
-                // Handle case where no teachers are assigned
                 if (response.status === 404 || data.msg === "No Teacher assigned with the given course ID") {
-                    setTeachers([]); // Set teachers to an empty array
-                    setShowSchoolsModal(true); // Still show the modal but with no teachers
+                    setTeachers([]);
+                    setShowSchoolsModal(true);
                 } else {
                     throw new Error(data.msg || "Failed to fetch teachers for the course");
                 }
@@ -217,30 +189,10 @@ const CheckboxWithAction = ({ onEdit }) => {
             toast.error(error.message || "An error occurred while fetching teachers for the course.");
         }
     };
-      
-      // const removeSchoolFromProject = async (projectId, schoolId) => {
-      //   try {
-      //     const response = await fetch('https://xcxd.online:8080/api/v1/project/removeProjectFromSchool', {
-      //       method: 'PUT',
-      //       headers: { 'Content-Type': 'application/json' },
-      //       body: JSON.stringify({ projectId, schoolId })
-      //     });
-      //     const data = await response.json();
-      //     if (response.ok) {
-      //       toast.success("School removed from the project successfully!");
-      //       fetchSchoolsForProject(projectId); // Refresh the list
-      //     } else {
-      //       throw new Error(data.message || "Failed to remove school from the project");
-      //     }
-      //   } catch (error) {
-      //     console.error("Error removing school from the project:", error);
-      //     toast.error(error.message || "An error occurred while removing the school from the project.");
-      //   }
-      // };
 
       const removeTeacherFromCourse = async (teacherId, courseId) => {
         try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/removeCourseTeachers/${teacherId}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/teacher/removeCourseTeachers/${teacherId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ courses: [courseId] })
@@ -248,7 +200,7 @@ const CheckboxWithAction = ({ onEdit }) => {
             const data = await response.json();
             if (response.ok) {
                 toast.success("Teacher removed from the course successfully!");
-                fetchTeachersForCourse(courseId); // Refresh the list after removal
+                fetchTeachersForCourse(courseId);
             } else {
                 throw new Error(data.message || "Failed to remove teacher from the course");
             }
@@ -257,19 +209,13 @@ const CheckboxWithAction = ({ onEdit }) => {
             toast.error(error.message || "An error occurred while removing the teacher from the course.");
         }
     };
-    
 
       const handleRowClick = (project) => {
         localStorage.setItem('selectedProject', JSON.stringify(project));
-        // router.push('/total-school'); // Navigate to the /total-school page
         router.push(`/total-courses/course-modules/?courseId=${project._id}`);
       };  
 
-      // Check if the user is allowed to manage teachers
-    const canManageProjects = userRole === 'superadmin' || 'admin';
-
-    console.log("selectedCourse", selectedCourse);
-    
+    const canManageProjects = userRole === 'superadmin' || 'admin';    
 
   return (
     <>
@@ -277,7 +223,6 @@ const CheckboxWithAction = ({ onEdit }) => {
       <TableHeader>
         <TableRow>
           <TableHead className="table-header serial-number">S. No.</TableHead>
-          {/* <TableHead>id</TableHead> */}
           <TableHead className="table-header name">Course Name</TableHead>
           <TableHead className="table-header description">Description</TableHead>
           <TableHead className="table-header">Created At</TableHead>
@@ -292,7 +237,6 @@ const CheckboxWithAction = ({ onEdit }) => {
             data-state={selectedRows.includes(item._id) && "selected"}
           >
             <TableCell className="table-cell serial-number">{(currentPage - 1) * recordsPerPage + index + 1}</TableCell>
-            {/* <TableCell>{item._id}</TableCell> */}
             <TableCell className="table-cell name font-medium text-card-foreground/80">
               <div className="flex gap-3 items-center">
                 <span className="text-sm text-card-foreground">
@@ -385,7 +329,6 @@ const CheckboxWithAction = ({ onEdit }) => {
                         variant="outline"
                         className="h-7 w-7"
                         color="secondary"
-                        // onClick={() => fetchSchoolsForProject(item._id)}
                         onClick={() => fetchTeachersForCourse(item._id)}
                       >
                         <Icon icon="heroicons:minus" className="h-4 w-4" />
@@ -442,9 +385,6 @@ const CheckboxWithAction = ({ onEdit }) => {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-lg mx-auto">
           <h3 className="text-lg font-bold mb-4">Manage Teachers for Course</h3>
-          {/* <div className="mb-2 text-center text-md">
-            Project: <strong>{selectedCourse?.title}</strong>
-          </div> */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Project Name:</label>
             <div className="p-2 bg-gray-100 rounded border">
@@ -476,13 +416,11 @@ const CheckboxWithAction = ({ onEdit }) => {
         </div>
       </div>
     )}
-    
 
     <ConfirmationModal
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteProject}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove course "${selectedCourse?.title}"?`}
     />
     </>

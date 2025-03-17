@@ -1,4 +1,3 @@
-// UpdateMultipleTypes.js
 "use client"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,12 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
-import { Textarea } from "@/components/ui/textarea";
-import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
+import config from "@/config/config";
 
 const schema = z.object({
     studentName: z.string().min(1, "Required").max(30),
@@ -23,20 +20,17 @@ const schema = z.object({
 const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Extracts 'YYYY-MM-DD' from the ISO string
+    return date.toISOString().split('T')[0];
   };
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
-    // defaultValues: initialData
     defaultValues: {
       studentName: initialData.studentName,
       phone: initialData.phoneNumber,
       email: initialData.email,
       password: initialData.password,
       school: initialData.school,
-      // dob: formatDate(initialData.dob),
-      // studentClass: initialData.class.toString()
     }
   });
 
@@ -44,34 +38,19 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
     
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  console.log("initialData", initialData);
-  console.log("errors", errors);
-
   const onSubmit = async (data) => {
-    console.log("data", data);
-
-    // Construct the payload dynamically
     let payload = {
         studentName: data.studentName,
         phoneNumber: data.phone,
         email: data.email,
-        // school: data.school // assuming school is still required
-        // studentClass: data.studentClass,
-        // studentClass: parseInt(initialData.studentClass, 10)
-        // studentClass: 2
     };
 
-    // Only add password to the payload if it's been provided
     if (data.password && data.password.trim() !== "") {
         payload.password = data.password;
     }
 
-    console.log("Formatted data for API:", payload);
-
-    console.log("api", `https://xcxd.online:8080/api/v1/student/updateStudent/${initialData._id}`)
-    
     try {
-      const response = await fetch(`https://xcxd.online:8080/api/v1/student/updateStudent/${initialData._id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/v1/student/updateStudent/${initialData._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

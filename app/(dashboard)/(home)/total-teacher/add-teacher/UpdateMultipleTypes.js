@@ -1,5 +1,5 @@
-// UpdateMultipleTypes.js
 "use client"
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -7,12 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { toast } from "@/components/ui/use-toast";
 import toast from "react-hot-toast";
-import { Textarea } from "@/components/ui/textarea";
-import BasicSelect from "./basic-select";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
+import config from "@/config/config";
 
 const schema = z.object({
     name: z.string().min(1),
@@ -26,7 +24,6 @@ const schema = z.object({
 const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
-    // defaultValues: initialData
     defaultValues: {
       name: initialData.name,
       phoneNumber: initialData.phoneNumber,
@@ -39,38 +36,25 @@ const UpdateMultipleTypes = ({ initialData, onUpdated }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-    
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  console.log("initialData", initialData);
-
-  console.log("errors", errors);  
-
   const onSubmit = async (data) => {
-    console.log("data", data);
-
-    // Construct the payload dynamically
+    // console.log("data", data);
     let payload = {
         name: data.name,
         phoneNumber: data.phoneNumber,
         email: data.email,
-        school: data.school, // assuming school is still required
+        school: data.school,
         state: data.state,
         district: data.district,
     };
 
-    // Only add password to the payload if it's been provided
     if (data.password && data.password.trim() !== "") {
         payload.password = data.password;
     }
     
-  console.log("Validation errors", errors);
-
-
-    console.log("Formatted data for API:", payload);
-    
     try {
-      const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/updateTeacher/${initialData._id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/v1/teacher/updateTeacher/${initialData._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

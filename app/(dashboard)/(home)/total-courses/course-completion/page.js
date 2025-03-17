@@ -11,7 +11,6 @@ const TailwindUiTable = () => {
     const [showMedia, setShowMedia] = useState(false);
     const [isWideScreen, setIsWideScreen] = useState(window.innerWidth > 500);
 
-    // Fetch user role from localStorage
     useEffect(() => {
       const userData = localStorage.getItem('user');
       if (userData) {
@@ -33,10 +32,9 @@ const TailwindUiTable = () => {
     }, []);
 
     const handleToggleMedia = () => {
-        setShowMedia(!showMedia); // Toggles the visibility of media files
+        setShowMedia(!showMedia);
       };
 
-    // Determine if the user is an admin or principal
     const canManageProjects = userRole === 'superadmin' || 'admin';
 
     return (

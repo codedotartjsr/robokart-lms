@@ -1,17 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { User, Phone, Location, Calender, CalenderCheck } from "@/components/svg";
-// import FigmaImage from "@/public/images/all-img/figma.png"
-// import ReactImage from "@/public/images/all-img/react.png"
 import SuperAdminInfo from './SuperAdminInfo';
+import { DashBoard, Graph } from "@/components/svg";
 
-import {
-    DashBoard,
-    Graph
-  } from "@/components/svg";
-
-import Image from "next/image";
 const UserInfo = () => {
     const [userData, setUserData] = useState({});
 
@@ -29,7 +21,6 @@ const UserInfo = () => {
   };
 
     if (userData.role === "superadmin") {
-        // Render the SuperAdminInfo component for superadmins
         return <SuperAdminInfo userData={userData} />;
     }
 
@@ -57,7 +48,6 @@ const UserInfo = () => {
             value: userData._id
         },
         {
-            // icon: User,
             icon: DashBoard,
             label: userData.role ? `${userData.role.charAt(0).toUpperCase() + userData.role.slice(1)} Name` : "Role Name",
             value: getNameValue()
@@ -68,7 +58,6 @@ const UserInfo = () => {
             value: userData.school?.name
         },
         {
-            // icon: Location,
             icon: DashBoard,
             label: userData.role ? `${userData.role.charAt(0).toUpperCase() + userData.role.slice(1)} Email` : "Role Email",
             value: userData.email
@@ -79,13 +68,11 @@ const UserInfo = () => {
             value: userData.school?.email
         },
         {
-            // icon: Phone,
             icon: DashBoard,
             label: userData.role ? `${userData.role.charAt(0).toUpperCase() + userData.role.slice(1)} Phone` : "Role Phone",
             value: userData.phoneNumber
         },
         {
-            // icon: Phone,
             icon: DashBoard,
             label: "School Phone",
             value: userData.school?.phone_no
@@ -106,7 +93,6 @@ const UserInfo = () => {
             value: `${userData.school?.district}, ${userData.school?.state}`
         },
         {
-            // icon: CalenderCheck,
             icon: DashBoard,
             label: "Joining Date",
             value: formatDate(userData.createdAt)
@@ -181,12 +167,12 @@ const UserInfo = () => {
             ))
           }
         </ul>
-        <div className="mt-6 text-lg font-medium text-default-800 mb-4">Active Teams</div>
+        <div className="mt-6 text-lg font-medium text-default-800 mb-4">Management Overview</div>
         <div className="space-y-3">
           {
             [
               {
-                title: "Students",
+                title: `As a User, you have access to standard features and personal settings. Your account was activated on ${formatDate(userData.createdAt)}.`,
                 img: '/images/auth/mountain.png',
                 total: 65
               }
@@ -199,7 +185,7 @@ const UserInfo = () => {
                 <div className="text-sm font-medium text-default-800">
                   {item.title}
                   <span className="font-normal">
-                    ({item.total} members)
+                    {/* ({item.total} members) */}
                   </span>
                 </div>
               </div>

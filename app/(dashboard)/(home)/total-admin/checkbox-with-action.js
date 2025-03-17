@@ -21,8 +21,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -30,25 +30,10 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAdmin, setSelectedAdmin] = useState(null);
     const [userRole, setUserRole] = useState(null);
-
-    const [schoolId, setSchoolId] = useState('');
-
-    const [adminsToShow, setAdminsToShow] = useState([]); // Admins to show per page
+    const [adminsToShow, setAdminsToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
-    
-    // useEffect(() => {
-    //   const userData = localStorage.getItem('user');
-    //   if (userData) {
-    //       const user = JSON.parse(userData);
-    //       setUserRole(user.role);
-    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
-    //   }
-    //   if (schoolId) {
-    //     fetchAdmins(schoolId);
-    //   }
-    // }, [schoolId]);
 
     useEffect(() => {
       const userData = localStorage.getItem('user');
@@ -61,8 +46,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
     const fetchAdmins = async () => {
       try {
-        const response = await fetch("https://xcxd.online:8080/api/v1/admin/getAllAdmin", {
-          // const response = await fetch(`https://xcxd.online:8080/api/v1/admin/getAllAdmin/${schoolId}`, {
+        const response = await fetch(`${config.API_BASE_URL}/v1/admin/getAllAdmin`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -72,7 +56,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         if (response.ok) {
           setAdmins(data.data);
           setTotalPages(Math.ceil(data.data.length / recordsPerPage));
-          setPageData(1); // Make sure this is called after setting admins
+          setPageData(1);
         } else {
           throw new Error(data.message || "Could not fetch admins");
         }
@@ -85,7 +69,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', admins.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', admins.slice(startIndex, endIndex));
       setAdminsToShow(admins.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -94,7 +78,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (admins.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, admins]); // Adding admins dependency to refresh the slice when data changes 
+    }, [currentPage, admins]);
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -105,13 +89,13 @@ const CheckboxWithAction = ({ onEdit }) => {
     const handleDeleteAdmin = async () => {
         if (selectedAdmin) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/admin/deleteAdmin/${selectedAdmin._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/admin/deleteAdmin/${selectedAdmin._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("Admin deleted successfully");
-              fetchAdmins(); // Refresh the list after deletion
+              fetchAdmins();
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete Admin");
@@ -128,7 +112,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
-      // Check if the user is allowed to manage teachers
     const canManageAdmins = userRole === 'superadmin';
 
   return (
@@ -193,14 +176,6 @@ const CheckboxWithAction = ({ onEdit }) => {
                     <TooltipArrow className="fill-primary" />
                   </TooltipContent>
                 </Tooltip>
-                {/* <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                >
-                  <Icon icon="heroicons:eye" className=" h-4 w-4" />
-                </Button> */}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -227,7 +202,6 @@ const CheckboxWithAction = ({ onEdit }) => {
       </TableBody>
     </Table>
 
-    {/* <DefaultPagination /> */}
     <DefaultPagination 
       currentPage={currentPage} 
       totalPages={totalPages} 
@@ -238,7 +212,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteAdmin}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove Admin "${selectedAdmin?.firstName} ${selectedAdmin?.lastName}" ?`}
     />
     </>

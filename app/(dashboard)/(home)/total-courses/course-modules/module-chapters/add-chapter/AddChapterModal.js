@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import config from "@/config/config";
 
 const AddChapterModal = ({ onClose, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || '');
@@ -11,12 +12,11 @@ const AddChapterModal = ({ onClose, initialData }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const moduleId = new URLSearchParams(window.location.search).get('moduleId');
         
         if (!moduleId) return;
 
-        const url = isEditing ? `https://xcxd.online:8080/api/v1/course/updateChapterTest/${initialData._id}` : 'https://xcxd.online:8080/api/v1/course/addChapterTest';
+        const url = isEditing ? `${config.API_BASE_URL}/v1/course/updateChapterTest/${initialData._id}` : `${config.API_BASE_URL}/v1/course/addChapterTest`;
         const method = isEditing ? 'PUT' : 'POST';
 
         try {
@@ -28,7 +28,7 @@ const AddChapterModal = ({ onClose, initialData }) => {
                 body: JSON.stringify({
                     title,
                     description,
-                    moduleId // Pass moduleId for adding a new chapter
+                    moduleId
                 })
             });
             const data = await response.json();

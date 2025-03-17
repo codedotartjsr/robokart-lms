@@ -1,16 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { User, Phone, Location, Calender, CalenderCheck } from "@/components/svg";
-// import FigmaImage from "@/public/images/all-img/figma.png"
-// import ReactImage from "@/public/images/all-img/react.png"
 
 import {
     DashBoard,
     Graph
   } from "@/components/svg";
-
-import Image from "next/image";
 
 const ContactSupport = () => {
   const supportInfo = [
@@ -38,12 +33,6 @@ const ContactSupport = () => {
       value: "123 Business Rd., City",
       description: "Visit our office for in-person queries or mail us at our official address."
     },
-    // {
-    //   icon: DashBoard,
-    //   label: "Operational Hours",
-    //   value: "Mon-Fri 9:00 AM to 5:00 PM (IST)",
-    //   description: "Our hours of operation. Contact us during these hours for all kinds of support."
-    // },
   ];
 
   return (

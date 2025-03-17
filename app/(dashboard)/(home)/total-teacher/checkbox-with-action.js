@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DefaultPagination from "@/components/ui/default-pagination";
+import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [selectedRows, setSelectedRows] = useState([]);
@@ -31,25 +32,12 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [userRole, setUserRole] = useState(null);
     const [schoolId, setSchoolId] = useState('');
 
-    const [teachersToShow, setTeachersToShow] = useState([]); // teachers to show per page
+    const [teachersToShow, setTeachersToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
 
-    // useEffect(() => {
-    //   const userData = localStorage.getItem('user');
-    //   if (userData) {
-    //       const user = JSON.parse(userData);
-    //       setUserRole(user.role);
-    //       setSchoolId(user.school?._id); // Assuming the school ID is stored in user data under 'school._id'
-    //   }
-    //   if (schoolId) {
-    //     fetchTeachers(schoolId);
-    //   }
-    // }, [schoolId]);
-
     useEffect(() => {
-          // Only execute this code on the client-side
           if (typeof window !== "undefined") {
             const query = new URLSearchParams(window.location.search);
             const urlSchoolId = query.get('schoolId');
@@ -62,7 +50,7 @@ const CheckboxWithAction = ({ onEdit }) => {
                 const user = JSON.parse(userData);
                 setUserRole(user.role);
                 if (user.school && user.school._id) {
-                  setSchoolId(user.school._id);  // Assuming the school ID is stored in user data under 'school._id'
+                  setSchoolId(user.school._id);
                 }
               }
             }
@@ -77,7 +65,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       
     const fetchTeachers = async (schoolId) => {
       try {
-        const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/getAllTeachers/${schoolId}`, {
+        const response = await fetch(`${config.API_BASE_URL}/v1/teacher/getAllTeachers/${schoolId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -87,7 +75,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         if (response.ok) {
           setTeachers(data.data);
           setTotalPages(Math.ceil(data.data.length / recordsPerPage));
-          setPageData(1); // Make sure this is called after setting teachers
+          setPageData(1);
         } else {
           throw new Error(data.message || "Could not fetch teachers");
         }
@@ -100,7 +88,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
       const startIndex = (page - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
-      console.log('Setting page data:', teachers.slice(startIndex, endIndex)); // Check what is being sliced
+      console.log('Setting page data:', teachers.slice(startIndex, endIndex));
       setTeachersToShow(teachers.slice(startIndex, endIndex));
       setCurrentPage(page);
     };
@@ -109,7 +97,7 @@ const CheckboxWithAction = ({ onEdit }) => {
       if (teachers.length > 0) {
         setPageData(currentPage);
       }
-    }, [currentPage, teachers]); // Adding teachers dependency to refresh the slice when data changes 
+    }, [currentPage, teachers]);
     
     const handlePageChange = newPage => {
       if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -117,19 +105,18 @@ const CheckboxWithAction = ({ onEdit }) => {
       }
     };
 
-
     const handleDeleteTeacher = async () => {
       console.log("selectedTeacher._id", selectedTeacher._id);
       
         if (selectedTeacher) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/teacher/deleteTeacher/${selectedTeacher._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/teacher/deleteTeacher/${selectedTeacher._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("Teacher deleted successfully");
-              fetchTeachers(schoolId); // Refresh the list after deletion
+              fetchTeachers(schoolId);
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete Teacher");
@@ -146,7 +133,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         setIsModalOpen(true);
       };
 
-      // Check if the user is allowed to manage teachers
     const canManageTeachers = userRole === 'superadmin' || userRole === 'admin' || userRole === 'principal' || userRole === 'school';
 
   return (
@@ -214,15 +200,6 @@ const CheckboxWithAction = ({ onEdit }) => {
                       <TooltipArrow className="fill-primary" />
                     </TooltipContent>
                   </Tooltip>
-
-                {/* <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-7 w-7"
-                  color="secondary"
-                >
-                  <Icon icon="heroicons:eye" className=" h-4 w-4" />
-                </Button> */}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -260,7 +237,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteTeacher}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove Teacher "${selectedTeacher?.name}" from this school?`}
     />
     </>

@@ -45,50 +45,6 @@ const LogInForm = () => {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const router = useRouter();
-
-  // const onSubmit = async (data) => {
-  //   startTransition(async () => {
-  //     try {
-  //       console.log("Logging in with:", data.email, data.password);
-  
-  //       const response = await fetch(
-  //         // "https://em4wuex6mh.ap-south-1.awsapprunner.com/api/auth/login",
-  //         // `${config.API_BASE_URL}/auth/login`,
-  //         "https://xcxd.online:8080/api/v1/auth/login",
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             "Accept": "application/json",
-  //           },
-  //           body: JSON.stringify({
-  //             email: data.email,
-  //             password: data.password,
-  //           }),
-  //         }
-  //       );
-  
-  //       if (!response.ok) {
-  //         const errorResponse = await response.json();
-  //         throw new Error(errorResponse.message || "Login failed");
-  //       }
-  
-  //       const result = await response.json();
-  //       console.log("Login successful:", result);
-  
-  //       localStorage.setItem("authToken", result.token);
-  //       localStorage.setItem("user", JSON.stringify(result.user));
-  
-  //       toast.success("Login Successful!");
-  //       window.location.href = "/dashboard";
-  
-  //       reset(); // Reset form after login
-  //     } catch (error) {
-  //       console.error("Login error:", error);
-  //       toast.error(error.message || "Network error. Please try again.");
-  //     }
-  //   });
-  // };
   
   const onSubmit = async (data) => {
     startTransition(async () => {
@@ -96,7 +52,7 @@ const LogInForm = () => {
         console.log("Logging in with:", data.email, data.password);
   
         const response = await fetch(
-          "https://xcxd.online:8080/api/v1/auth/login",
+          `${config.API_BASE_URL}/v1/auth/login`,
           {
             method: "POST",
             headers: {

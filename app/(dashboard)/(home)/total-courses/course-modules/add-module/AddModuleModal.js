@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import config from "@/config/config";
 
 const AddModuleModal = ({ onClose, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || '');
@@ -12,7 +13,7 @@ const AddModuleModal = ({ onClose, initialData }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const url = isEditing ? `https://xcxd.online:8080/api/v1/course/updateModuleTest/${initialData._id}` : 'https://xcxd.online:8080/api/v1/course/addModuleTest';
+        const url = isEditing ? `${config.API_BASE_URL}/v1/course/updateModuleTest/${initialData._id}` : '${config.API_BASE_URL}/v1/course/addModuleTest';
         const method = isEditing ? 'PUT' : 'POST';
 
         try {
@@ -30,7 +31,6 @@ const AddModuleModal = ({ onClose, initialData }) => {
             const data = await response.json();
             if (response.ok) {
                 toast.success(`Module ${isEditing ? 'updated' : 'added'} successfully!`);
-                // onSave();
                 onClose();
             } else {
                 throw new Error(data.message || `Failed to ${isEditing ? 'update' : 'add'} the module`);

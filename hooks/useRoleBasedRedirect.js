@@ -8,7 +8,7 @@ const useRoleBasedRedirect = (allowedRoles) => {
   
   useEffect(() => {
     // Retrieve the user data from localStorage and parse it
-    const userData = localStorage.getItem('usersws');
+    const userData = localStorage.getItem('user');
     if (userData) {
       const user = JSON.parse(userData);
       const role = user.role;  // Access the role from the parsed user object
@@ -18,7 +18,8 @@ const useRoleBasedRedirect = (allowedRoles) => {
       
       // Redirect if the role is not included in the allowedRoles array
       if (!allowedRoles.includes(role)) {
-        router.push('/unauthorized');
+        router.push('/access-denied');
+        // window.location.href = "/access-denied";
       }
     } else {
       // Optionally handle cases where there is no user data (e.g., not logged in)
@@ -48,7 +49,7 @@ export default useRoleBasedRedirect;
 //       }
 
 //     if (!allowedRoles.includes(userRole)) {
-//       router.push('/unauthorized');
+//       router.push('/access-denied');
 //     }
 //   }, [router, allowedRoles]);
 // };
@@ -68,7 +69,7 @@ export default useRoleBasedRedirect;
 //     }
     
 //     if (!allowedRoles.includes(role)) {
-//       router.push('/unauthorized');
+//       router.push('/access-denied');
 //     }
 //   }, [router]);
 // };

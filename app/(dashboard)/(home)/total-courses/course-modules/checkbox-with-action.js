@@ -23,6 +23,7 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip";
   import DefaultPagination from "@/components/ui/default-pagination";
+  import config from "@/config/config";
 
 const CheckboxWithAction = ({ onEdit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,8 +33,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const [showChaptersModal, setShowChaptersModal] = useState(false);
     const [currentModuleChapters, setCurrentModuleChapters] = useState([]);
     const router = useRouter();
-
-    const [modulesToShow, setModulesToShow] = useState([]); // modules to show per page
+    const [modulesToShow, setModulesToShow] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const recordsPerPage = 5;
@@ -50,14 +50,14 @@ const CheckboxWithAction = ({ onEdit }) => {
     const fetchDataBasedOnContext = async () => {
         const courseId = new URLSearchParams(window.location.search).get('courseId');
         if (courseId) {
-            const apiURL = `https://xcxd.online:8080/api/v1/course/getCoursesModules/${courseId}`;
+            const apiURL = `${config.API_BASE_URL}/v1/course/getCoursesModules/${courseId}`;
             try {
                 const response = await fetch(apiURL, { method: 'GET' });
                 const data = await response.json();
                 if (response.ok) {
                     setModules(data.modules);
                     setTotalPages(Math.ceil(data.modules.length / recordsPerPage));
-                    setPageData(1); // Make sure this is called after setting modules
+                    setPageData(1);
                 } else {
                     throw new Error(data.message || "Failed to fetch modules");
                 }
@@ -71,7 +71,7 @@ const CheckboxWithAction = ({ onEdit }) => {
     const setPageData = (page) => {
         const startIndex = (page - 1) * recordsPerPage;
         const endIndex = startIndex + recordsPerPage;
-        console.log('Setting page data:', modules.slice(startIndex, endIndex)); // Check what is being sliced
+        console.log('Setting page data:', modules.slice(startIndex, endIndex));
         setModulesToShow(modules.slice(startIndex, endIndex));
         setCurrentPage(page);
       };
@@ -80,7 +80,7 @@ const CheckboxWithAction = ({ onEdit }) => {
         if (modules.length > 0) {
           setPageData(currentPage);
         }
-      }, [currentPage, modules]); // Adding modules dependency to refresh the slice when data changes 
+      }, [currentPage, modules]); 
       
       const handlePageChange = newPage => {
         if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
@@ -91,13 +91,13 @@ const CheckboxWithAction = ({ onEdit }) => {
     const handleDeleteModule = async () => {
         if (selectedModule) {
           try {
-            const response = await fetch(`https://xcxd.online:8080/api/v1/course/deleteModuleTest/${selectedModule._id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/v1/course/deleteModuleTest/${selectedModule._id}`, {
               method: 'DELETE',
             });
             const data = await response.json();
             if (response.ok) {
               toast.success("Module deleted successfully");
-              fetchDataBasedOnContext(); // Refresh the list after deletion
+              fetchDataBasedOnContext();
               setIsModalOpen(false);
             } else {
               throw new Error(data.message || "Failed to delete Module");
@@ -123,23 +123,11 @@ const CheckboxWithAction = ({ onEdit }) => {
     const navigateToChaptersPage = (moduleId) => {
         const courseId = new URLSearchParams(window.location.search).get('courseId');
         if(courseId && moduleId){
-            // localStorage.setItem('selectedModule', JSON.stringify(selectedModule));
-            // localStorage.setItem('currentModuleChapters', JSON.stringify(currentModuleChapters));
             router.push(`/total-courses/course-modules/module-chapters/?courseId=${courseId}&moduleId=${moduleId}`);
-            // router.push(`/total-courses/course-modules/?courseId=${project._id}`);
-            setShowChaptersModal(false); // Close modal upon navigation
+            setShowChaptersModal(false);
         }
     };
 
-    // useEffect(() => {
-    //     // Automatically redirect if chapters are available
-    //     if (chapters && chapters.length > 0) {
-    //         localStorage.setItem('currentModuleChapters', JSON.stringify(chapters)); // Store chapters in localStorage
-    //         router.push(`/total-courses/course-modules/module-chapters/`);
-    //     }
-    // }, [chapters, module, router]);
-
-      // Check if the user is allowed to manage teachers
     const canManageModules = userRole === 'superadmin' || 'admin';    
 
   return (
@@ -173,7 +161,6 @@ const CheckboxWithAction = ({ onEdit }) => {
                                 variant="outline"
                                 className="h-7 w-7"
                                 color="secondary"
-                                //   onClick={() => handleViewDetails(module)}
                                 onClick={() => handleViewChapters(module)}
                             >
                             <Icon icon="heroicons:eye" className=" h-4 w-4" />
@@ -243,23 +230,11 @@ const CheckboxWithAction = ({ onEdit }) => {
         onPageChange={handlePageChange} 
     />
 
-    {/* {showDetailsModal && (
-      <DetailsModal school={currentSchoolDetails} onClose={() => setShowDetailsModal(false)} />
-    )} */}
-    {/* {showChaptersModal && (
-                <ChaptersModal
-                    module={selectedModule}
-                    chapters={currentModuleChapters}
-                    onClose={() => setShowChaptersModal(false)}
-                />
-            )} */}
-
             {showChaptersModal && (
                 <ChaptersModal
                     module={selectedModule}
                     chapters={currentModuleChapters}
                     onClose={() => setShowChaptersModal(false)}
-                    // navigateToChaptersPage={navigateToChaptersPage}
                     navigateToChaptersPage={() => navigateToChaptersPage(selectedModule._id)}
                 />
             )}
@@ -268,7 +243,6 @@ const CheckboxWithAction = ({ onEdit }) => {
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteModule}
-        // message="Are you sure you want to delete this image?"
         message={`Are you sure you want to remove Module "${selectedModule?.title}" and it's chapters from the course?`}
     />
     </>
@@ -277,30 +251,8 @@ const CheckboxWithAction = ({ onEdit }) => {
 
 export default CheckboxWithAction;
 
-
-// const ChaptersModal = ({ module, chapters, onClose }) => {
-//     return (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-//             <div className="bg-white p-4 md:p-6 rounded-lg w-11/12 max-w-md mx-auto">
-//                 <h3 className="text-lg font-bold mb-4">Chapters in {module.title}</h3>
-//                 <ul className="list-none space-y-2">
-//                     {chapters.length > 0 ? chapters.map(chapter => (
-//                         <li key={chapter._id}>
-//                             <span className="text-blue-500 hover:text-blue-700">{chapter.title} - {chapter.description}</span>
-//                         </li>
-//                     )) : <li>No chapters available.</li>}
-//                 </ul>
-//                 <div className="flex justify-end mt-4">
-//                     <Button color="secondary" onClick={onClose}>Close</Button>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
 const ChaptersModal = ({ module, chapters, onClose, navigateToChaptersPage }) => {
     useEffect(() => {
-        // Check if chapters are available and redirect if they are
         if (chapters.length > 0) {
             navigateToChaptersPage();
         }

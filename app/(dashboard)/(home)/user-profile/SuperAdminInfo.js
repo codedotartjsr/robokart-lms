@@ -78,7 +78,7 @@ const SuperAdminInfo = ({ userData }) => {
             ))
           }
         </ul>
-        <div className="mt-6 text-lg font-medium text-default-800 mb-4">Active Teams</div>
+        <div className="mt-6 text-lg font-medium text-default-800 mb-4">Management Overview</div>
         <div className="space-y-3">
           {
             [
